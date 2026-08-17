@@ -6,13 +6,13 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('./src/middleware/cors');
 const compression = require('compression');
-const { Logger } = require('./src/utils/logger');
+const { createLogger } = require('./src/utils/logger');
 const { connectMongoDB } = require('./src/db/mongodb');
 const { ConfigService } = require('./src/services/config');
 const dashboardRoutes = require('./src/routes/dashboard');
 const errorHandler = require('./src/middleware/errorHandler');
 
-const logger = new Logger('Main');
+const logger = createLogger('Main');
 const app = express();
 const PORT = process.env.PORT || 3456;
 
@@ -50,3 +50,4 @@ async function startServer() {
 }
 
 startServer();
+

@@ -1,31 +1,40 @@
-# Project Agents
+# AGENTS.md
 
-## Central Orchestration
+## Visão geral
+Sistema profissional de automação de YouTube com multi-provider, templates e pipeline de vídeo robusto.
 
-For complex multi-step tasks, use the `workflow-orchestrator` skill from `.kilocode/skills/`. It acts as the central conductor that:
-- Analyzes task complexity and selects the appropriate workflow mode
-- Routes simple tasks to single agents/skills
-- Orchestrates complex tasks through a full pipeline (spec → architecture → dev/QA loop → ship)
-- Enforces quality gates between phases
+## Entrypoint
 
-## Specialized Agent Routing
+- `node index.js` — sem flags de CLI. Primeira execução redireciona `/` para `/setup`.
+- Encerra imediatamente se MongoDB não estiver disponível; sem fallback SQLite.
+- Porta padrão: `3456` (variável de ambiente `PORT`).
 
-When a task matches one of these domains, automatically load the `claude-agent-router` skill and apply the corresponding agent's rules and workflow.
+## Comandos
 
-### Agent Domains (`.claude/agents/`)
-Domains that trigger specialized agent routing:
-- SEO, search optimization, video optimization
-- Visual design, UI/UX, brand storytelling
-- Content creation, marketing campaigns
-- Product management, trend research
-- Testing, accessibility, performance benchmarking
-- Multi-agent orchestration
+- `npm start` / `npm run dev` (nodemon)
+- `npm test` — executa `tests/run.js` com Node `assert`; requer MongoDB rodando.
+- `npm run lint` — `eslint src/` (sem arquivo de configuração eslint no repositório).
 
-### Software Engineering Skills (`.kilocode/skills/`)
-When a task matches software engineering lifecycle domains, use the corresponding skill from `.kilocode/skills/`:
-- API design, interfaces, frontend UI
-- Code review, debugging, TDD, refactoring
-- CI/CD, observability, performance, security
-- Documentation, ADRs, git workflow, shipping
+## Quirks críticos
 
-Do not ask the user to manually select an agent. Detect intent from the request and route to the appropriate specialized agent automatically.
+- `src/db/db.js` é 657 linhas de código SQLite morto — nunca importado.
+- `src/middleware/security.js` e `src/middleware/compression.js` são definidos mas não utilizados; `index.js` usa pacotes `helmet()` e `compression()` diretamente.
+
+## Arquitetura
+
+- `index.js` monta middleware → DB → rotas → escuta.
+- `src/routes/dashboard.js` recebe `(app, configService)` e monta todas as rotas API diretamente no app.
+- `src/services/config.js` é a camada central de serviço/acesso a dados para todos os modelos Mongoose.
+- Frontend é arquivos estáticos sob `dashboard/`.
+
+## Convenções
+
+- pt-BR em UI, docs, logs, alertas, comentários.
+- Segredos de env apenas. `.env.example` é commitado; `.env` não é.
+- Middleware de auth checa header `x-api-key`; se `API_KEY` não estiver definida, auth é bypassada.
+- Middleware de validação espera `schema.safeParse()` (interface similar a zod).
+- Limpeza é obrigatória entre fases; não restaure pastas/legacy removidas (`utils/`, `agents/`, `database/`, `setup.js`, `walkthrough.js`) ou modos removidos.
+
+## Habilidades
+
+- `.kilocode/skills/` contém habilidades repo-locais (orchestrator, frontend, security, etc.).

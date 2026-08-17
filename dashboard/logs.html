@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logs - YouTube Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🎬 YouTube Automation</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/settings.html">Configurações</a>
+      <a href="/templates.html">Templates</a>
+      <a href="/schedule.html">Agendamentos</a>
+      <a href="/logs.html" class="active">Logs</a>
+      <a href="/metrics.html">Métricas</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card">
+      <h2>Logs do Sistema</h2>
+      <div class="filters">
+        <select id="filter-nivel">
+          <option value="">Todos</option>
+          <option value="debug">Debug</option>
+          <option value="info">Info</option>
+          <option value="warn">Warn</option>
+          <option value="error">Error</option>
+        </select>
+        <input type="text" id="filter-servico" placeholder="Serviço">
+        <button onclick="loadLogs()" class="btn-primary">Filtrar</button>
+      </div>
+      <div id="logs-list">
+        <div class="loading">Carregando logs...</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function loadLogs() {
+      const nivel = document.getElementById('filter-nivel').value;
+      const servico = document.getElementById('filter-servico').value;
+      const params = new URLSearchParams();
+      if (nivel) params.append('nivel', nivel);
+      if (servico) params.append('servico', servico);
+
+      const res = await fetch(`/api/logs?${params}`);
+      const logs = await res.json();
+      document.getElementById('logs-list').innerHTML = logs.map(l => `
+        <div class="log-item log-${l.nivel}">
+          <strong>${l.nivel.toUpperCase()}</strong> [${l.servico}] ${l.mensagem}
+        </div>
+      `).join('');
+    }
+
+    loadLogs();
+  </script>
+</body>
+</html>

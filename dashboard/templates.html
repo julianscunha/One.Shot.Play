@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Templates - YouTube Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🎬 YouTube Automation</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/settings.html">Configurações</a>
+      <a href="/templates.html" class="active">Templates</a>
+      <a href="/schedule.html">Agendamentos</a>
+      <a href="/logs.html">Logs</a>
+      <a href="/metrics.html">Métricas</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card">
+      <h2>Templates de Publicação</h2>
+      <div id="templates-list">
+        <div class="loading">Carregando templates...</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function loadTemplates() {
+      const res = await fetch('/api/templates');
+      const templates = await res.json();
+      document.getElementById('templates-list').innerHTML = templates.map(t => `
+        <div class="list-item">
+          <strong>${t.nome}</strong> - ${t.tipo} - ${t.idioma}
+        </div>
+      `).join('');
+    }
+
+    loadTemplates();
+  </script>
+</body>
+</html>

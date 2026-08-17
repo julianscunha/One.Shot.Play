@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Execução Manual - YouTube Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🎬 YouTube Automation</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/settings.html">Configurações</a>
+      <a href="/templates.html">Templates</a>
+      <a href="/schedule.html">Agendamentos</a>
+      <a href="/logs.html">Logs</a>
+      <a href="/metrics.html">Métricas</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card">
+      <h2>Execução Manual</h2>
+      <form id="execute-form" class="form">
+        <div class="form-group">
+          <label for="template">Template</label>
+          <select id="template" required>
+            <option value="">Selecione um template</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary">Iniciar Execução</button>
+      </form>
+
+      <div id="progress" style="display: none;" class="progress-container">
+        <h3>Progresso</h3>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <p id="progress-text">Preparando...</p>
+        <div id="fases-status"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function loadTemplates() {
+      const res = await fetch('/api/templates');
+      const templates = await res.json();
+      const select = document.getElementById('template');
+      templates.forEach(t => {
+        const option = document.createElement('option');
+        option.value = t._id;
+        option.textContent = t.nome;
+        select.appendChild(option);
+      });
+    }
+
+    document.getElementById('execute-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const templateId = document.getElementById('template').value;
+      const res = await fetch('/api/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ template: templateId })
+      });
+      const result = await res.json();
+      if (result.success) {
+        document.getElementById('progress').style.display = 'block';
+        monitorarExecucao(result.execution._id);
+      }
+    });
+
+    async function monitorarExecucao(executionId) {
+      const interval = setInterval(async () => {
+        const res = await fetch(`/api/executions/${executionId}`);
+        const execution = await res.json();
+        document.getElementById('progress-fill').style.width = `${execution.progresso}%`;
+        document.getElementById('progress-text').textContent = `${execution.status} - ${execution.faseAtual}`;
+        document.getElementById('fases-status').innerHTML = execution.fases.map(f => `
+          <div class="fase ${f.status}">${f.nome}: ${f.status}</div>
+        `).join('');
+
+        if (['concluido', 'falha', 'cancelado'].includes(execution.status)) {
+          clearInterval(interval);
+        }
+      }, 2000);
+    }
+
+    loadTemplates();
+  </script>
+</body>
+</html>

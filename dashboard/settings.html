@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações - YouTube Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🎬 YouTube Automation</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/settings.html" class="active">Configurações</a>
+      <a href="/templates.html">Templates</a>
+      <a href="/schedule.html">Agendamentos</a>
+      <a href="/logs.html">Logs</a>
+      <a href="/metrics.html">Métricas</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="tabs">
+      <button class="tab-button active" onclick="showTab('providers')">Provedores</button>
+      <button class="tab-button" onclick="showTab('channel')">Canal</button>
+      <button class="tab-button" onclick="showTab('security')">Segurança</button>
+    </div>
+
+    <div id="providers" class="tab-content">
+      <div class="card">
+        <h2>Provedores de IA</h2>
+        <div id="providers-list">
+          <div class="loading">Carregando provedores...</div>
+        </div>
+        <form id="provider-form" class="form">
+          <div class="form-group">
+            <label for="providerName">Nome</label>
+            <input type="text" id="providerName" required>
+          </div>
+          <div class="form-group">
+            <label for="providerType">Tipo</label>
+            <select id="providerType" required>
+              <option value="ai">IA (Texto)</option>
+              <option value="tts">TTS (Voz)</option>
+              <option value="image">Imagem</option>
+              <option value="video">Vídeo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="primaryEndpoint">Endpoint Primário</label>
+            <input type="text" id="primaryEndpoint" required>
+          </div>
+          <div class="form-group">
+            <label for="primaryKey">API Key Primária</label>
+            <input type="password" id="primaryKey" required>
+          </div>
+          <div class="form-group">
+            <label for="fallbackEndpoint">Endpoint Fallback (opcional)</label>
+            <input type="text" id="fallbackEndpoint">
+          </div>
+          <div class="form-group">
+            <label for="fallbackKey">API Key Fallback (opcional)</label>
+            <input type="password" id="fallbackKey">
+          </div>
+          <button type="submit" class="btn-primary">Salvar Provedor</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="channel" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>Configuração do Canal</h2>
+        <form id="channel-form" class="form">
+          <div class="form-group">
+            <label for="channelName">Nome do Canal</label>
+            <input type="text" id="channelName" required>
+          </div>
+          <div class="form-group">
+            <label for="author">Autor</label>
+            <input type="text" id="author" required>
+          </div>
+          <div class="form-group">
+            <label for="language">Idioma Padrão</label>
+            <select id="language" required>
+              <option value="pt-BR">Português (Brasil)</option>
+              <option value="en-US">Inglês (EUA)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Salvar Canal</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="security" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>Segurança</h2>
+        <form id="security-form" class="form">
+          <div class="form-group">
+            <label for="apiKey">API Key</label>
+            <input type="text" id="apiKey" required>
+          </div>
+          <div class="form-group">
+            <label for="allowedOrigins">Origens Permitidas (separadas por vírgula)</label>
+            <input type="text" id="allowedOrigins" value="http://localhost:3456">
+          </div>
+          <button type="submit" class="btn-primary">Salvar Segurança</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).style.display = 'block';
+      event.target.classList.add('active');
+    }
+
+    async function loadProviders() {
+      const res = await fetch('/api/config/providers');
+      const providers = await res.json();
+      document.getElementById('providers-list').innerHTML = providers.map(p => `
+        <div class="list-item">
+          <strong>${p.nome}</strong> (${p.tipo}) - ${p.ativo ? 'Ativo' : 'Inativo'}
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('provider-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await fetch('/api/config/providers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: document.getElementById('providerName').value,
+          tipo: document.getElementById('providerType').value,
+          primary: {
+            endpoint: document.getElementById('primaryEndpoint').value,
+            apiKey: document.getElementById('primaryKey').value
+          },
+          fallback: {
+            endpoint: document.getElementById('fallbackEndpoint').value,
+            apiKey: document.getElementById('fallbackKey').value
+          }
+        })
+      });
+      loadProviders();
+    });
+
+    document.getElementById('channel-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          channelName: document.getElementById('channelName').value,
+          author: document.getElementById('author').value,
+          language: document.getElementById('language').value
+        })
+      });
+      alert('Configuração salva!');
+    });
+
+    loadProviders();
+  </script>
+</body>
+</html>

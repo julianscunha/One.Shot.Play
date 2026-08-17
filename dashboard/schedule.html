@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamentos - YouTube Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🎬 YouTube Automation</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/settings.html">Configurações</a>
+      <a href="/templates.html">Templates</a>
+      <a href="/schedule.html" class="active">Agendamentos</a>
+      <a href="/logs.html">Logs</a>
+      <a href="/metrics.html">Métricas</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card">
+      <h2>Agendamentos</h2>
+      <div id="schedule-list">
+        <div class="loading">Carregando agendamentos...</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function loadSchedules() {
+      const res = await fetch('/api/schedules');
+      const schedules = await res.json();
+      document.getElementById('schedule-list').innerHTML = schedules.map(s => `
+        <div class="list-item">
+          <strong>${s.nome}</strong> - ${s.frequencia} - ${s.horario}
+        </div>
+      `).join('');
+    }
+
+    loadSchedules();
+  </script>
+</body>
+</html>

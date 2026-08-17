@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - YouTube Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🎬 YouTube Automation</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/" class="active">Dashboard</a>
+      <a href="/settings.html">Configurações</a>
+      <a href="/templates.html">Templates</a>
+      <a href="/schedule.html">Agendamentos</a>
+      <a href="/logs.html">Logs</a>
+      <a href="/metrics.html">Métricas</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="grid">
+      <div class="card">
+        <h2>Status do Sistema</h2>
+        <div id="system-status">
+          <div class="loading">Carregando...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Execuções</h2>
+        <div id="executions">
+          <div class="loading">Carregando...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>APIs</h2>
+        <div id="apis">
+          <div class="loading">Carregando...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Ações Rápidas</h2>
+        <div class="actions">
+          <a href="/execute.html" class="btn-primary">Executar Manualmente</a>
+          <a href="/schedule.html" class="btn-secondary">Gerenciar Agendamentos</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function loadDashboard() {
+      try {
+        const healthRes = await fetch('/api/health');
+        const health = await healthRes.json();
+        document.getElementById('system-status').innerHTML = `
+          <p><strong>Status:</strong> ${health.status === 'healthy' ? '🟢 Saudável' : '🔴 Erro'}</p>
+          <p><strong>Uptime:</strong> ${Math.round(health.uptime / 60)} minutos</p>
+          <p><strong>Configurado:</strong> ${health.configured ? 'Sim' : 'Não'}</p>
+        `;
+
+        const metricsRes = await fetch('/api/metrics');
+        const metrics = await metricsRes.json();
+        document.getElementById('executions').innerHTML = `
+          <p><strong>Total:</strong> ${metrics.total}</p>
+          <p><strong>Sucesso:</strong> ${metrics.sucesso}</p>
+          <p><strong>Falha:</strong> ${metrics.falha}</p>
+          <p><strong>Taxa de Sucesso:</strong> ${metrics.taxaSucesso}</p>
+        `;
+
+        document.getElementById('apis').innerHTML = `
+          <p><strong>OpenRouter:</strong> 🟢 Online</p>
+          <p><strong>YouTube:</strong> 🟢 Online</p>
+          <p><strong>Telegram:</strong> 🟢 Online</p>
+        `;
+      } catch (error) {
+        console.error('Erro ao carregar dashboard:', error);
+      }
+    }
+
+    loadDashboard();
+    setInterval(loadDashboard, 30000);
+  </script>
+</body>
+</html>

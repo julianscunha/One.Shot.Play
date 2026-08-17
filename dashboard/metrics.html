@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Métricas - YouTube Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🎬 YouTube Automation</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/settings.html">Configurações</a>
+      <a href="/templates.html">Templates</a>
+      <a href="/schedule.html">Agendamentos</a>
+      <a href="/logs.html">Logs</a>
+      <a href="/metrics.html" class="active">Métricas</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="grid">
+      <div class="card">
+        <h2>Execuções</h2>
+        <div id="exec-metrics">
+          <div class="loading">Carregando...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Custos</h2>
+        <div id="cost-metrics">
+          <div class="loading">Carregando...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function loadMetrics() {
+      const metricsRes = await fetch('/api/metrics');
+      const metrics = await metricsRes.json();
+      document.getElementById('exec-metrics').innerHTML = `
+        <p><strong>Total:</strong> ${metrics.total}</p>
+        <p><strong>Sucesso:</strong> ${metrics.sucesso}</p>
+        <p><strong>Falha:</strong> ${metrics.falha}</p>
+        <p><strong>Taxa de Sucesso:</strong> ${metrics.taxaSucesso}</p>
+      `;
+
+      const costRes = await fetch('/api/costs?periodo=diario');
+      const costs = await costRes.json();
+      document.getElementById('cost-metrics').innerHTML = `
+        <p><strong>Total (diário):</strong> $${costs.total.toFixed(2)}</p>
+      `;
+    }
+
+    loadMetrics();
+  </script>
+</body>
+</html>

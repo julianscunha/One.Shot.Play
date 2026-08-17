@@ -1,5 +1,5 @@
 {
-  "name": "NOVO_REPOSITORIO",
+  "name": "One.Shot.Play",
   "version": "3.0.0",
   "description": "Sistema profissional de automação de YouTube com multi-provider, templates e pipeline de vídeo",
   "main": "index.js",
@@ -41,4 +41,5 @@
     "node": ">=20.0.0"
   }
 }
+
 

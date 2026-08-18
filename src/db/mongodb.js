@@ -1,13 +1,22 @@
-const mongoose = require('mongoose');
+// SQLite implementation (replacing MongoDB)
+const Database = require('./db');
+let databaseInstance = null;
 
-const connectMongoDB = async () => {
-  const uri = process.env.MONGODB_URI || process.env.BACK4APP_DATABASE_URL;
-  if (!uri) {
-    throw new Error('MONGODB_URI ou BACK4APP_DATABASE_URL não configurada');
+const initializeDatabase = async () => {
+  try {
+    if (!databaseInstance) {
+      databaseInstance = new Database();
+      await databaseInstance.initialize();
+    }
+    console.log('Database SQLite initialized successfully');
+    return databaseInstance;
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+    throw error;
   }
-
-  await mongoose.connect(uri);
-  console.log('MongoDB conectado com sucesso');
 };
 
-module.exports = { connectMongoDB };
+module.exports = {
+  initializeDatabase,
+  getDatabase: () => databaseInstance
+};

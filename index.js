@@ -2,12 +2,11 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
-const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('./src/middleware/cors');
 const compression = require('compression');
 const { createLogger } = require('./src/utils/logger');
-const { connectMongoDB } = require('./src/db/mongodb');
+const { initializeDatabase } = require('./src/db');
 const { ConfigService } = require('./src/services/config');
 const dashboardRoutes = require('./src/routes/dashboard');
 const errorHandler = require('./src/middleware/errorHandler');
@@ -25,7 +24,8 @@ app.use(errorHandler);
 
 async function startServer() {
   try {
-    await connectMongoDB();
+    // Initialize SQLite database instead of MongoDB
+    await initializeDatabase();
 
     const configService = new ConfigService();
     const isConfigured = await configService.isSystemConfigured();

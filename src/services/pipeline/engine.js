@@ -1,5 +1,5 @@
-const { retry, RetryError } = require('../utils/retry');
-const { ERROR_TYPES, isRetryable } = require('../utils/errors');
+const { retry, RetryError } = require('../../utils/retry');
+const { ERROR_TYPES, isRetryable, classifyError } = require('../../utils/errors');
 
 class PipelineEngine {
   constructor(configService) {
@@ -53,7 +53,7 @@ class PipelineEngine {
           )
         });
       } catch (error) {
-        const tipo = require('../utils/errors').classifyError(error);
+        const tipo = classifyError(error);
         const tentativas = (execution.fases[i]?.tentativas || 0) + 1;
 
         await this.configService.addLog({

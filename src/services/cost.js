@@ -1,4 +1,4 @@
-const { ConfigService } = require('../services/config');
+const { ConfigService } = require('./config');
 
 class CostService {
   constructor() {

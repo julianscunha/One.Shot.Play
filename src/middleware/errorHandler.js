@@ -1,4 +1,4 @@
-const { ERROR_TYPES, classifyError } = require('./errors');
+const { ERROR_TYPES, classifyError } = require('../utils/errors');
 
 module.exports = (error, req, res, next) => {
   const tipo = classifyError(error);

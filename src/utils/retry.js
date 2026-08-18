@@ -1,35 +1,60 @@
+// Helper functions for database retry logic
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 class RetryError extends Error {
-  constructor(message, attempts, lastError) {
+  constructor(message, attempt, maxAttempts, lastError) {
     super(message);
-    this.attempts = attempts;
+    this.name = 'RetryError';
+    this.attempt = attempt;
+    this.maxAttempts = maxAttempts;
     this.lastError = lastError;
   }
 }
 
-const retry = async (fn, options = {}) => {
+async function retry(operation, options = {}) {
   const {
     maxAttempts = 3,
     initialDelay = 1000,
-    maxDelay = 10000,
     factor = 2,
-    shouldRetry = () => true
+    shouldRetry = (error) => true,
+    onRetry = () => {}
   } = options;
 
-  let attempts = 0;
+  let attempt = 1;
+  let lastError;
   let delay = initialDelay;
 
-  while (attempts < maxAttempts) {
+  while (attempt <= maxAttempts) {
     try {
-      return await fn();
+      return await operation();
     } catch (error) {
-      attempts++;
-      if (!shouldRetry(error) || attempts >= maxAttempts) {
-        throw new RetryError(`Falha após ${attempts} tentativas`, attempts, error);
+      lastError = error;
+      
+      if (attempt === maxAttempts || !shouldRetry(error)) {
+        throw new RetryError(
+          `Operation failed after ${attempt} attempts: ${error.message}`, 
+          attempt, 
+          maxAttempts, 
+          lastError
+        );
       }
-      await new Promise(resolve => setTimeout(resolve, delay));
-      delay = Math.min(delay * factor, maxDelay);
+
+      onRetry(attempt, error, delay);
+      await sleep(delay);
+      delay *= factor;
+      attempt++;
     }
   }
-};
 
-module.exports = { retry, RetryError };
+  throw new RetryError(
+    `Operation failed after ${attempt} attempts`, 
+    attempt, 
+    maxAttempts, 
+    lastError
+  );
+}
+
+module.exports = {
+  retry,
+  RetryError
+};

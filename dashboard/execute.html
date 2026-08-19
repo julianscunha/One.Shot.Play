@@ -3,203 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Execução Manual - YouTube Automation</title>
+  <title>Execução Manual - One.Shot.Play</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- YouTube Navigation -->
-  <nav class="youtube-nav">
-    <div class="nav-brand">
-      <div class="nav-icon">🎬</div>
-      <h1>YouTube Automation</h1>
-    </div>
-    <div class="nav-sections">
-      <a href="/" class="nav-section">
-        <div class="section-icon">📊</div>
-        <div class="section-content"><div class="section-title">Dashboard</div><div class="section-desc">Visão geral e métricas</div></div>
-      </a>
-      <a href="/setup.html" class="nav-section">
-        <div class="section-icon">⚙️</div>
-        <div class="section-content"><div class="section-title">Setup</div><div class="section-desc">Configurar provedores e API</div></div>
-      </a>
-      <a href="/execute.html" class="nav-section active">
-        <div class="section-icon">🚀</div>
-        <div class="section-content"><div class="section-title">Execute</div><div class="section-desc">Execuções manuais e monitoradas</div></div>
-      </a>
-      <a href="/templates.html" class="nav-section">
-        <div class="section-icon">📋</div>
-        <div class="section-content"><div class="section-title">Templates</div><div class="section-desc">Gerenciar templates de publicação</div></div>
-      </a>
-      <a href="/schedule.html" class="nav-section">
-        <div class="section-icon">⏰</div>
-        <div class="section-content"><div class="section-title">Agendamentos</div><div class="section-desc">Pipeline automatizado agendado</div></div>
-      </a>
-      <a href="/logs.html" class="nav-section">
-        <div class="section-icon">📋</div>
-        <div class="section-content"><div class="section-title">Logs</div><div class="section-desc">Acompanhamento de atividades</div></div>
-      </a>
-      <a href="/metrics.html" class="nav-section">
-        <div class="section-icon">📈</div>
-        <div class="section-content"><div class="section-title">Métricas</div><div class="section-desc">Análise de performance</div></div>
-      </a>
-    </div>
+  <nav class="app-nav">
+    <a href="/" class="nav-brand">
+      <span class="brand-dot"></span>
+      One.Shot.Play
+    </a>
+    <ul class="nav-menu">
+      <li><a href="/" class="nav-link">Dashboard</a></li>
+      <li><a href="/setup.html" class="nav-link">Setup</a></li>
+      <li><a href="/execute.html" class="nav-link active">Execute</a></li>
+      <li><a href="/templates.html" class="nav-link">Templates</a></li>
+      <li><a href="/schedule.html" class="nav-link">Agendamentos</a></li>
+      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
+      <li><a href="/settings.html" class="nav-link">Configurações</a></li>
+    </ul>
   </nav>
 
-  <header class="page-header">
-    <div class="header-content">
-      <div class="header-icon">🚀</div>
-      <div class="header-text">
-        <h1>Execução Manual</h1>
-        <p>Execute processos de automação YouTube com controle total e monitoramento em tempo real</p>
-      </div>
-    </div>
-    <div class="header-stats">
-      <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Execuções Hoje</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">100%</div>
-        <div class="stat-label">Taxa de Sucesso</div>
-      </div>
-      <div class="stat-number">0s</div>
-      <div class="stat-label">Tempo Médio por Execução</div>
-    </div>
-  </header>
-
   <main class="container">
+    <!-- Header (Operate: action-oriented, compact stats) -->
+    <header class="page-header">
+      <div class="header-title">
+        <span class="page-icon" style="opacity:0.6;">E</span>
+        <h1>Execução Manual</h1>
+      </div>
+      <p class="header-desc">Selecione um template e inicie o processo de upload com monitoramento em tempo real.</p>
+      <div class="header-actions">
+        <div class="stat-chip">
+          <span class="stat-value">0</span>
+          <span class="stat-label">Execuções hoje</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-value">0%</span>
+          <span class="stat-label">Taxa de sucesso</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Template selection (Operate surface: selection state dominates) -->
     <div class="card">
       <div class="card-header">
-        <div class="card-icon">⚡</div>
-        <h2>Execução Manual de Pipeline</h2>
-        <p class="card-subtitle">Selecione um template e inicie o processo de upload manualmente</p>
+        <span class="card-icon" aria-hidden="true">T</span>
+        <div>
+          <h3 class="card-title">Selecione um template</h3>
+          <p class="card-subtitle">Escolha o template de publicação para iniciar uma execução</p>
+        </div>
       </div>
-      
-      <div class="form-section">
-        <h3 class="section-title">
-          <div class="section-icon">🎯</div>
-          Configuração de Execução
-        </h3>
-        
-        <div class="template-selector">
-          <label class="field-label">Template de Publicação</label>
-          <div class="template-grid">
-            <div class="template-card" data-template-id="standard-youtube">
-              <div class="template-card-header">
-                <div class="template-icon">📹</div>
-                <div class="template-badge">Mais Popular</div>
-              </div>
-              <div class="template-card-body">
-                <h4>Standard YouTube</h4>
-                <p>Template padrão otimizado para canais principais</p>
-                <div class="template-features">
-                  <div class="feature-tag">HD +4K Suportado</div>
-                  <div class="feature-tag">CAptions Auto</div>
-                  <div class="feature-tag">Tags IA-Geradas</div>
-                </div>
-              </div>
-              <div class="template-card-footer">
-                <button class="btn-outline" onclick="selectTemplate('standard-youtube')">
-                  <span>👁️</span>
-                  <span>Visualizar</span>
-                </button>
-                <button class="btn-primary" onclick="selectTemplateAndExecute('standard-youtube')">
-                  <span>🚀</span>
-                  <span>Iniciar Execução</span>
-                </button>
-              </div>
-            </div>
 
-            <div class="template-card" data-template-id="quick-upload">
-              <div class="template-card-header">
-                <div class="template-icon">⚡</div>
-                <div class="template-badge">Rápido</div>
-              </div>
-              <div class="template-card-body">
-                <h4>Quick Upload</h4>
-                <p>Upload rápido e simples com configurações mínimas</p>
-                <div class="template-features">
-                  <div class="feature-tag">Upload Único</div>
-                  <div class="feature-tag">Sem Processamento IA</div>
-                  <div class="feature-tag">Velocidade Máxima</div>
-                </div>
-              </div>
-              <div class="template-card-footer">
-                <button class="btn-outline" onclick="selectTemplate('quick-upload')">
-                  <span>👁️</span>
-                  <span>Visualizar</span>
-                </button>
-                <button class="btn-primary" onclick="selectTemplateAndExecute('quick-upload')">
-                  <span>🚀</span>
-                  <span>Iniciar Rápido</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="template-card" data-template-id="detailed-youtube">
-              <div class="template-card-header">
-                <div class="template-icon">🎬</div>
-                <div class="template-badge">Detalhado</div>
-              </div>
-              <div class="template-card-body">
-                <h4>Detailed YouTube</h4>
-                <p>Template completo com processamento avançado de IA</p>
-                <div class="template-features">
-                  <div class="feature-tag">Geração IA de Tags</div>
-                  <div class="feature-tag">Thumbnail IA</div>
-                  <div class="feature-tag">Descrição Otimizada SEO</div>
-                </div>
-              </div>
-              <div class="template-card-footer">
-                <button class="btn-outline" onclick="selectTemplate('detailed-youtube')">
-                  <span>👁️</span>
-                  <span>Visualizar</span>
-                </button>
-                <button class="btn-primary" onclick="selectTemplateAndExecute('detailed-youtube')">
-                  <span>🚀</span>
-                  <span>Iniciar Detalhado</span>
-                </button>
-              </div>
-            </div>
-          </div>
+      <div class="template-grid" id="template-grid">
+        <div class="loading-state">
+          <p>Carregando templates…</p>
         </div>
       </div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card-large">
-        <div class="stat-icon">📊</div>
-        <div class="stat-info">
-          <div class="stat-value">0</div>
-          <div class="stat-label">Total de Execuções</div>
+    <!-- Execution progress (revealed after execution starts) -->
+    <div class="card mt-lg" id="progress-card" style="display: none;">
+      <div class="card-header">
+        <span class="card-icon" aria-hidden="true">P</span>
+        <div>
+          <h3 class="card-title">Progresso da Execução</h3>
+          <p class="card-subtitle" id="progress-text">Iniciando…</p>
         </div>
       </div>
-      <div class="stat-card-large">
-        <div class="stat-icon">⏱️</div>
-        <div class="stat-info">
-          <div class="stat-value">0min</div>
-          <div class="stat-label">Tempo Médio por Execução</div>
-        </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
       </div>
-      <div class="stat-card-large">
-        <div class="stat-icon">✅</div>
-        <div class="stat-info">
-          <div class="stat-value">100%</div>
-          <div class="stat-label">Taxa de Sucesso</div>
-        </div>
-      </div>
+      <div id="phases-status"></div>
     </div>
   </main>
 
+  <!-- Template preview modal -->
   <div id="template-preview" class="modal">
-    <div class="modal-content large-modal">
+    <div class="modal-content">
       <div class="modal-header">
-        <h3 id="preview-title">Template Preview</h3>
-        <button class="modal-close" onclick="closeTemplatePreview()">×</button>
+        <h3 id="preview-title">Detalhes do Template</h3>
+        <button class="modal-close" onclick="closeTemplatePreview()" type="button">&times;</button>
       </div>
-      <div class="modal-body">
-        <div id="preview-content">
-        </div>
+      <div class="modal-body" id="preview-content"></div>
+      <div class="card-actions">
+        <button class="btn-secondary" onclick="closeTemplatePreview()" type="button">Voltar</button>
+        <button class="btn-primary" id="execute-btn" type="button">Iniciar execução</button>
       </div>
     </div>
   </div>
@@ -208,133 +99,146 @@
 
   <script>
     let selectedTemplate = null;
+    let executionsData = [];
 
-    function selectTemplate(templateId) {
-      document.querySelectorAll('.template-card').forEach(card => {
-        card.classList.remove('selected');
-      });
-      
-      const selectedCard = document.querySelector(`[data-template-id="${templateId}"]`);
-      selectedCard.classList.add('selected');
-      selectedTemplate = templateId;
-      
-      showTemplatePreview(templateId);
+    async function loadTemplates() {
+      try {
+        const response = await fetch('/api/templates');
+        const templates = await response.json();
+        displayTemplates(templates);
+      } catch (error) {
+        console.error('Erro ao carregar templates:', error);
+        document.getElementById('template-grid').innerHTML =
+          '<div class="loading-state"><p>Erro ao carregar templates.</p></div>';
+        showNotification('Erro ao carregar templates', 'error');
+      }
     }
 
-    function closeTemplatePreview() {
-      document.getElementById('template-preview').classList.remove('show');
-      selectedTemplate = null;
+    function displayTemplates(templates) {
+      const grid = document.getElementById('template-grid');
+      if (!templates || templates.length === 0) {
+        grid.innerHTML = '<div class="loading-state"><p>Nenhum template disponível.</p></div>';
+        return;
+      }
+      grid.innerHTML = templates.map(t => `
+        <div class="template-card" data-template-id="${t._id || t.id}">
+          <div class="template-card-header">
+            <div class="template-icon" aria-hidden="true">${getTemplateIcon(t.tipo)}</div>
+            <div>
+              <h4 class="template-title">${t.nome}</h4>
+              <span class="template-badge">${t.tipo === 'standard' ? 'Padrão' : t.tipo === 'quick' ? 'Rápido' : 'Detalhado'}</span>
+            </div>
+          </div>
+          <div class="template-card-body">
+            <p class="template-description">${t.descricao || 'Sem descrição.'}</p>
+            <div class="template-stats">
+              <div class="stat-item"><span class="stat-value">${t.uso || 0}</span><span class="stat-label">usos</span></div>
+              <div class="stat-item"><span class="stat-value">$${t.custo || '0.00'}</span><span class="stat-label">custo</span></div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="btn-outline" onclick="selectTemplateAndPreview('${t._id || t.id}')">
+              Visualizar
+            </button>
+            <button class="btn-primary" onclick="selectTemplateAndExecute('${t._id || t.id}')">
+              Executar
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getTemplateIcon(tipo) {
+      const icons = { standard: 'YT', quick: 'Q', detailed: 'D', custom: 'C' };
+      return icons[tipo] || 'T';
+    }
+
+    function selectTemplateAndExecute(templateId) {
+      const card = document.querySelector(`[data-template-id="${templateId}"]`);
+      if (card) card.classList.add('selected');
+      selectedTemplate = templateId;
+      executeTemplate(templateId);
+    }
+
+    function selectTemplateAndPreview(templateId) {
+      const card = document.querySelector(`[data-template-id="${templateId}"]`);
+      if (card) card.classList.add('selected');
+      selectedTemplate = templateId;
+      showTemplatePreview(templateId);
     }
 
     function showTemplatePreview(templateId) {
       const previews = {
-        'standard-youtube': {
-          title: 'Standard YouTube Template',
-          description: 'Professional upload template optimized for main YouTube channels with full HD support and automated tagging.',
-          features: ['HD +4K Quality', 'Auto Captions', 'AI-Generated Tags', 'SEO Optimized Descriptions'],
-          icon: '📹'
+        'standard': {
+          title: 'Standard YouTube',
+          description: 'Template padrão otimizado para canais principais. Suporte a HD e 4K, legendas automáticas e tags geradas por IA.',
+          features: ['HD +4K', 'Legendas automáticas', 'Tags IA', 'SEO otimizado'],
         },
-        'quick-upload': {
-          title: 'Quick Upload Template',
-          description: 'Fast and simple upload with minimal configuration for rapid content publishing.',
-          features: ['Single Upload', 'No AI Processing', 'Maximum Speed', 'Basic Settings'],
-          icon: '⚡'
+        'quick': {
+          title: 'Quick Upload',
+          description: 'Upload rápido e simples com configurações mínimas para publicações frequentes.',
+          features: ['Upload único', 'Sem processamento IA', 'Velocidade máxima'],
         },
-        'detailed-youtube': {
-          title: 'Detailed YouTube Template',
-          description: 'Advanced upload template with comprehensive AI processing and detailed metadata optimization.',
-          features: ['AI Tag Generation', 'Smart Thumbnails', 'SEO Optimization', 'Detailed Descriptions'],
-          icon: '🎬'
+        'detailed': {
+          title: 'Detailed YouTube',
+          description: 'Template completo com processamento avançado de IA, thumbnail inteligente e descrições otimizadas.',
+          features: ['Geração IA de tags', 'Thumbnail inteligente', 'Descrição SEO'],
         }
       };
-      
-      const preview = previews[templateId];
-      const previewContent = document.getElementById('preview-content');
-      
-      previewContent.innerHTML = `
+
+      const preview = previews[templateId] || { title: 'Template', description: 'Detalhes do template.', features: [] };
+      const content = document.getElementById('preview-content');
+      content.innerHTML = `
         <div class="template-preview-content">
-          <div class="preview-header">
-            <div class="preview-icon">${preview.icon}</div>
-            <h3>${preview.title}</h3>
-          </div>
-          <div class="preview-body">
-            <p>${preview.description}</p>
-            <div class="preview-features">
-              <h4>Key Features:</h4>
-              <ul>
-                ${preview.features.map(feature => `<li>${feature}</li>`).join('')}
-              </ul>
-            </div>
+          <p>${preview.description}</p>
+          <div class="template-stats">
+            ${preview.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
           </div>
         </div>
       `;
-      
+      document.getElementById('preview-title').textContent = preview.title;
+      const executeBtn = document.getElementById('execute-btn');
+      executeBtn.onclick = () => { closeTemplatePreview(); selectTemplateAndExecute(templateId); };
       document.getElementById('template-preview').classList.add('show');
     }
 
-    function selectTemplateAndExecute(templateId) {
-      if (!templateId) {
-        showNotification('Please select a template first', 'warning');
-        return;
-      }
-      
-      executeTemplate(templateId);
+    function closeTemplatePreview() {
+      document.getElementById('template-preview').classList.remove('show');
     }
 
     async function executeTemplate(templateId) {
+      if (!templateId) {
+        showNotification('Selecione um template primeiro.', 'warning');
+        return;
+      }
       try {
         const response = await fetch('/api/execute', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            template: templateId,
-            tipo: 'manual'
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ template: templateId, tipo: 'manual' })
         });
-        
         const result = await response.json();
-        
         if (result.success) {
-          showExecutionProgress(result.execution._id);
-          showNotification('Template execution started successfully!', 'success');
+          document.getElementById('progress-card').style.display = 'block';
+          showNotification('Execução iniciada.', 'success');
+          monitorExecution(result.execution._id);
         } else {
-          showNotification(`Error: ${result.error}`, 'error');
+          showNotification(`Erro: ${result.error}`, 'error');
         }
       } catch (error) {
-        showNotification('Error starting template execution', 'error');
+        showNotification('Erro ao iniciar execução', 'error');
       }
     }
 
-    function showExecutionProgress(executionId) {
-      const progressSection = document.getElementById('progress');
-      progressSection.style.display = 'block';
-      monitorExecutionProgress(executionId);
-    }
-
-    async function monitorExecutionProgress(executionId) {
+    function monitorExecution(executionId) {
       const interval = setInterval(async () => {
         try {
           const response = await fetch(`/api/executions/${executionId}`);
           const execution = await response.json();
-          
-          document.getElementById('progress-fill').style.width = `${execution.progresso}%`;
-          document.getElementById('progress-text').textContent = `${execution.status} - ${execution.faseAtual}`;
-          document.getElementById('fases-status').innerHTML = execution.fases.map(fase => `
-            <div class="fase ${fase.status}">${fase.nome}: ${fase.status}</div>
-          `).join('');
-          
-          if (['concluido', 'falha', 'cancelado'].includes(execution.status)) {
-            clearInterval(interval);
-            if (execution.status === 'concluido') {
-              showNotification('Execution completed successfully!', 'success');
-            } else if (execution.status === 'falha') {
-              showNotification(`Execution failed: ${execution.erro}`, 'error');
-            }
-          }
+          document.getElementById('progress-fill').style.width = `${execution.progresso || 0}%`;
+          document.getElementById('progress-text').textContent = `${execution.status} — ${execution.faseAtual || ''}`;
         } catch (error) {
-          console.error('Error monitoring execution:', error);
+          clearInterval(interval);
         }
       }, 2000);
     }
@@ -345,93 +249,13 @@
       notification.className = `notification ${type}`;
       notification.innerHTML = `
         <span class="notification-message">${message}</span>
-        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+        <button class="notification-close" onclick="this.parentElement.remove()" type="button">&times;</button>
       `;
       container.appendChild(notification);
       setTimeout(() => notification.remove(), 5000);
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      loadTemplates();
-      document.querySelectorAll('.template-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const templateId = card.getAttribute('data-template-id');
-          selectTemplate(templateId);
-        });
-      });
-    });
-
-    async function loadTemplates() {
-      try {
-        const response = await fetch('/api/templates');
-        const templates = await response.json();
-        console.log('Templates loaded:', templates);
-      } catch (error) {
-        console.error('Error loading templates:', error);
-      }
-    }
-
-    const additionalStyles = `
-      .template-preview-content {
-        padding: 2rem;
-      }
-      .preview-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-      }
-      .preview-icon {
-        font-size: 2.5rem;
-        width: 60px;
-        height: 60px;
-        background: var(--bg-surface);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid var(--border);
-      }
-      .preview-features ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .preview-features li {
-        padding: 0.5rem 0;
-        border-bottom: 1px solid var(--border);
-        color: var(--text-secondary);
-      }
-      .template-card.selected {
-        border-color: var(--primary);
-        background: rgba(255, 0, 0, 0.05);
-        box-shadow: var(--shadow-red-lg);
-      }
-      .fase {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem;
-        margin-bottom: 0.5rem;
-        background: var(--bg-elevated);
-        border-radius: 6px;
-        border-left: 3px solid var(--text-secondary);
-      }
-      .fase.completed { border-left-color: var(--success); background: rgba(76, 175, 80, 0.1); }
-      .fase.active { border-left-color: var(--primary); background: rgba(255, 0, 0, 0.1); }
-      .fase.falha { border-left-color: var(--error); background: rgba(244, 67, 54, 0.1); }
-      .fase-name { font-weight: 500; }
-      .fase-status { font-size: 0.875rem; padding: 0.25rem 0.5rem; border-radius: 4px; background: var(--bg-surface); }
-      .progress-container { margin-top: 2rem; padding: 1.5rem; background: var(--bg-elevated); border-radius: 8px; border: 1px solid var(--border); }
-      .progress-bar { width: 100%; height: 8px; background: var(--border); border-radius: 4px; margin: 1rem 0; overflow: hidden; }
-      .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 4px; transition: width 0.3s ease; position: relative; }
-      .progress-fill::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: white; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); animation: pulse 2s infinite; }
-      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    `;
-
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = additionalStyles;
-    document.head.appendChild(styleSheet);
+    document.addEventListener('DOMContentLoaded', loadTemplates);
   </script>
 </body>
 </html>

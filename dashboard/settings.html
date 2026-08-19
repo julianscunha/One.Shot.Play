@@ -3,140 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configurações - YouTube Automation</title>
+  <title>Configurações - One.Shot.Play</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav class="youtube-nav">
-    <div class="nav-brand">
-      <div class="nav-icon">🎬</div>
-      <h1>YouTube Automation</h1>
-    </div>
-    <div class="nav-sections">
-      <a href="/" class="nav-section">
-        <div class="section-icon">📊</div>
-        <div class="section-content"><div class="section-title">Dashboard</div><div class="section-desc">Visão geral e métricas</div></div>
-      </a>
-      <a href="/setup.html" class="nav-section">
-        <div class="section-icon">⚙️</div>
-        <div class="section-content"><div class="section-title">Setup</div><div class="section-desc">Configurar provedores e API</div></div>
-      </a>
-      <a href="/execute.html" class="nav-section">
-        <div class="section-icon">🚀</div>
-        <div class="section-content"><div class="section-title">Execute</div><div class="section-desc">Execuções manuais e monitoradas</div></div>
-      </a>
-      <a href="/templates.html" class="nav-section">
-        <div class="section-icon">📋</div>
-        <div class="section-content"><div class="section-title">Templates</div><div class="section-desc">Gerenciar templates de publicação</div></div>
-      </a>
-      <a href="/schedule.html" class="nav-section">
-        <div class="section-icon">⏰</div>
-        <div class="section-content"><div class="section-title">Agendamentos</div><div class="section-desc">Pipeline automatizado agendado</div></div>
-      </a>
-      <a href="/logs.html" class="nav-section">
-        <div class="section-icon">📋</div>
-        <div class="section-content"><div class="section-title">Logs</div><div class="section-desc">Acompanhamento de atividades</div></div>
-      </a>
-      <a href="/metrics.html" class="nav-section">
-        <div class="section-icon">📈</div>
-        <div class="section-content"><div class="section-title">Métricas</div><div class="section-desc">Análise de performance</div></div>
-      </a>
-    </div>
+  <nav class="app-nav">
+    <a href="/" class="nav-brand">
+      <span class="brand-dot"></span>
+      One.Shot.Play
+    </a>
+    <ul class="nav-menu">
+      <li><a href="/" class="nav-link">Dashboard</a></li>
+      <li><a href="/setup.html" class="nav-link">Setup</a></li>
+      <li><a href="/execute.html" class="nav-link">Execute</a></li>
+      <li><a href="/templates.html" class="nav-link">Templates</a></li>
+      <li><a href="/schedule.html" class="nav-link">Agendamentos</a></li>
+      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
+      <li><a href="/settings.html" class="nav-link active">Configurações</a></li>
+    </ul>
   </nav>
 
-  <header class="page-header">
-    <div class="header-content">
-      <div class="header-icon">⚙️</div>
-      <div class="header-text">
-        <h1>Configurações do Sistema</h1>
-        <p>Personalize o comportamento do seu sistema de automação YouTube</p>
-      </div>
-    </div>
-    <div class="header-stats">
-      <div class="stat-card"><div class="stat-number">5</div><div class="stat-label">Seções Configuráveis</div></div>
-      <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Provedores Ativos</div></div>
-      <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Sistema Operacional</div></div>
-    </div>
-  </header>
-
   <main class="container">
-    <div class="grid grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">⚙️</div>
-          <div><h3 class="card-title">Configurações Gerais</h3><p class="card-subtitle">Preferências do sistema</p></div>
+    <header class="page-header">
+      <div class="header-title">
+        <span class="page-icon" aria-hidden="true">_settings</span>
+        <h1>Configurações do Sistema</h1>
+      </div>
+      <p class="header-desc">Personalize o comportamento do seu sistema de automação YouTube.</p>
+      <div class="header-stats">
+        <div class="stat-chip">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Seções</span>
         </div>
-        <div class="form-group">
-          <label for="channel-name">Nome do Canal</label>
-          <input type="text" id="channel-name" placeholder="Meu Canal YouTube">
+        <div class="stat-chip">
+          <span class="stat-value">3</span>
+          <span class="stat-label">Provedores</span>
         </div>
-        <div class="form-group">
-          <label for="upload-quality">Qualidade de Upload</label>
-          <select id="upload-quality">
-            <option value="1080p">1080p (Recomendado)</option>
-            <option value="720p">720p</option>
-            <option value="480p">480p</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="upload-visibility">Visibilidade</label>
-          <select id="upload-visibility">
-            <option value="public">Público</option>
-            <option value="private">Privado</option>
-            <option value="unlisted">Não listado</option>
-          </select>
+        <div class="stat-chip">
+          <span class="stat-value">Online</span>
+          <span class="stat-label">Status</span>
         </div>
       </div>
+    </header>
+
+    <div class="grid grid-2">
+      <!-- General settings -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">🔒</div>
-          <div><h3 class="card-title">Segurança</h3><p class="card-subtitle">Configurações de autenticação</p></div>
+          <span class="card-icon" aria-hidden="true">G</span>
+          <div>
+            <h3 class="card-title">Gerais</h3>
+            <p class="card-subtitle">Preferências do sistema</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="channel-name">Nome do canal</label>
+          <div class="input-wrapper">
+            <input type="text" id="channel-name" placeholder="Digite o nome do canal...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="upload-quality">Qualidade de upload</label>
+          <div class="input-wrapper">
+            <select id="upload-quality">
+              <option value="1080p">1080p (recomendado)</option>
+              <option value="720p">720p</option>
+              <option value="480p">480p</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="upload-visibility">Visibilidade padrão</label>
+          <div class="input-wrapper">
+            <select id="upload-visibility">
+              <option value="public">Público</option>
+              <option value="private">Privado</option>
+              <option value="unlisted">Não listado</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security settings -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-icon" aria-hidden="true">S</span>
+          <div>
+            <h3 class="card-title">Segurança</h3>
+            <p class="card-subtitle">Autenticação e acesso</p>
+          </div>
         </div>
         <div class="form-group">
           <label for="api-key">Chave da API</label>
-          <input type="password" id="api-key" placeholder="***">
+          <div class="input-wrapper">
+            <input type="password" id="api-key" placeholder="Digite a chave da API..." autocomplete="off">
+          </div>
         </div>
         <div class="form-group">
-          <label for="session-timeout">Timeout da Sessão (minutos)</label>
-          <input type="number" id="session-timeout" value="30" min="5" max="480">
+          <label for="session-timeout">Timeout da sessão (min)</label>
+          <div class="input-wrapper">
+            <input type="number" id="session-timeout" value="30" min="5" max="480">
+          </div>
         </div>
         <div class="form-group">
-          <label for="enable-logging">Habilitar Logs</label>
-          <select id="enable-logging">
-            <option value="true">Sim</option>
-            <option value="false">Não</option>
-          </select>
+          <label for="enable-logging">Logs detalhados</label>
+          <div class="input-wrapper">
+            <select id="enable-logging">
+              <option value="true">Ativado</option>
+              <option value="false">Desativado</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Execution settings -->
     <div class="card mt-lg">
       <div class="card-header">
-        <div class="card-icon">🚀</div>
-        <div><h3 class="card-title">Configurações de Execução</h3><p class="card-subtitle">Parâmetros de automação e retry</p></div>
+        <span class="card-icon" aria-hidden="true">E</span>
+        <div>
+          <h3 class="card-title">Execução</h3>
+          <p class="card-subtitle">Parâmetros de automação e retry</p>
+        </div>
       </div>
-      <div class="grid grid-3">
+      <div class="form-grid">
         <div class="form-group">
-          <label for="max-retries">Máximo de Retries</label>
-          <input type="number" id="max-retries" value="3" min="0" max="10">
+          <label for="max-retries">Máximo de retries</label>
+          <div class="input-wrapper">
+            <input type="number" id="max-retries" value="3" min="0" max="10">
+          </div>
         </div>
         <div class="form-group">
-          <label for="retry-delay">Delay entre Retries (seg)</label>
-          <input type="number" id="retry-delay" value="5" min="1" max="60">
+          <label for="retry-delay">Delay entre retries (s)</label>
+          <div class="input-wrapper">
+            <input type="number" id="retry-delay" value="5" min="1" max="60">
+          </div>
         </div>
         <div class="form-group">
-          <label for="timeout">Timeout de Execução (seg)</label>
-          <input type="number" id="timeout" value="300" min="60" max="3600">
+          <label for="timeout">Timeout de execução (s)</label>
+          <div class="input-wrapper">
+            <input type="number" id="timeout" value="300" min="60" max="3600">
+          </div>
         </div>
       </div>
     </div>
-    <div class="setup-actions mt-lg">
-      <button class="btn-secondary" onclick="resetSettings()"><dots_function_call>
-        <span>🔄</span>
-        <span>Restaurar Padrão</span>
+
+    <!-- Action bar -->
+    <div class="setup-actions">
+      <button class="btn-secondary" onclick="resetSettings()" type="button">
+        Restaurar padrão
       </button>
-      <button class="btn-primary" onclick="saveSettings()">
-        <span>💾</span>
-        <span>Salvo Configurações</span>
+      <button class="btn-primary" onclick="saveSettings()" type="button">
+        Salvar configurações
       </button>
     </div>
   </main>
@@ -145,18 +167,23 @@
 
   <script>
     function saveSettings() {
-      showNotification('Configurações salvas com sucesso!', 'success');
+      showNotification('Configurações salvas com sucesso.', 'success');
     }
+
     function resetSettings() {
-      if (confirm('Tem certeza que deseja restaurar as configurações padrão?')) {
-        showNotification('Configurações restauradas para o padrão!', 'info');
+      if (confirm('Restaurar as configurações padrão? Esta ação não pode ser desfeita.')) {
+        showNotification('Configurações restauradas para o padrão.', 'info');
       }
     }
+
     function showNotification(message, type = 'info') {
       const container = document.getElementById('notification-container');
       const notification = document.createElement('div');
       notification.className = `notification ${type}`;
-      notification.innerHTML = `<span class="notification-message">${message}</span><button class="notification-close" onclick="this.parentElement.remove()">×</button>`;
+      notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()" type="button">&times;</button>
+      `;
       container.appendChild(notification);
       setTimeout(() => notification.remove(), 5000);
     }

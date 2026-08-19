@@ -3,238 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Templates - YouTube Automation</title>
+  <title>Templates - One.Shot.Play</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav class="youtube-nav">
-    <div class="nav-brand">
-      <div class="nav-icon">🎬</div>
-      <h1>YouTube Automation</h1>
-    </div>
-    <div class="nav-sections">
-      <a href="/" class="nav-section">
-        <div class="section-icon">📊</div>
-        <div class="section-content"><div class="section-title">Dashboard</div><div class="section-desc">Visão geral e métricas</div></div>
-      </a>
-      <a href="/setup.html" class="nav-section">
-        <div class="section-icon">⚙️</div>
-        <div class="section-content"><div class="section-title">Setup</div><div class="section-desc">Configurar provedores e API</div></div>
-      </a>
-      <a href="/execute.html" class="nav-section">
-        <div class="section-icon">🚀</div>
-        <div class="section-content"><div class="section-title">Execute</div><div class="section-desc">Execuções manuais e monitoradas</div></div>
-      </a>
-      <a href="/templates.html" class="nav-section active">
-        <div class="section-icon">📋</div>
-        <div class="section-content"><div class="section-title">Templates</div><div class="section-desc">Gerenciar templates de publicação</div></div>
-      </a>
-      <a href="/schedule.html" class="nav-section">
-        <div class="section-icon">⏰</div>
-        <div class="section-content"><div class="section-title">Agendamentos</div><div class="section-desc">Pipeline automatizado agendado</div></div>
-      </a>
-      <a href="/logs.html" class="nav-section">
-        <div class="section-icon">📋</div>
-        <div class="section-content"><div class="section-title">Logs</div><div class="section-desc">Acompanhamento de atividades</div></div>
-      </a>
-      <a href="/metrics.html" class="nav-section">
-        <div class="section-icon">📈</div>
-        <div class="section-content"><div class="section-title">Métricas</div><div class="section-desc">Análise de performance</div></div>
-      </a>
-    </div>
+  <nav class="app-nav">
+    <a href="/" class="nav-brand">
+      <span class="brand-dot"></span>
+      One.Shot.Play
+    </a>
+    <ul class="nav-menu">
+      <li><a href="/" class="nav-link">Dashboard</a></li>
+      <li><a href="/setup.html" class="nav-link">Setup</a></li>
+      <li><a href="/execute.html" class="nav-link">Execute</a></li>
+      <li><a href="/templates.html" class="nav-link active">Templates</a></li>
+      <li><a href="/schedule.html" class="nav-link">Agendamentos</a></li>
+      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
+      <li><a href="/settings.html" class="nav-link">Configurações</a></li>
+    </ul>
   </nav>
 
-  <header class="page-header">
-    <div class="header-content">
-      <div class="header-icon">📋</div>
-      <div class="header-text">
-        <h1>Templates de Publicação</h1>
-        <p>Gerencie e personalize templates de upload para seus vídeos YouTube</p>
-      </div>
-    </div>
-    <div class="header-actions">
-      <button class="btn-secondary" onclick="exportTemplates()">
-        <span>💾</span>
-        <span>Exportar Templates</span>
-      </button>
-      <button class="btn-primary" onclick="showTemplateModal()">
-        <span>➕</span>
-        <span>Novo Template</span>
-      </button>
-    </div>
-  </header>
-
   <main class="container">
-    <div class="stats-grid">
-      <div class="stat-card-large">
-        <div class="stat-icon">📝</div>
-        <div class="stat-info">
-          <div class="stat-value" id="total-templates">0</div>
-          <div class="stat-label">Total de Templates</div>
-        </div>
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-title">
+        <h1>Templates</h1>
       </div>
-      
-      <div class="stat-card-large">
-        <div class="stat-icon">🎬</div>
-        <div class="stat-info">
-          <div class="stat-value" id="youtube-templates">0</div>
-          <div class="stat-label">Templates YouTube</div>
-        </div>
+      <p class="header-desc">Gerencie e personalize templates de upload para seus vídeos.</p>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="exportTemplates()" type="button">
+          Exportar
+        </button>
+        <button class="btn-primary" onclick="showTemplateModal()" type="button">
+          Novo template
+        </button>
       </div>
-      
-      <div class="stat-card-large">
-        <div class="stat-icon">⚡</div>
-        <div class="stat-info">
-          <div class="stat-value" id="quick-templates">0</div>
-          <div class="stat-label">Templates Rápidos</div>
-        </div>
-      </div>
-      
-      <div class="stat-card-large">
-        <div class="stat-icon">🎯</div>
-        <div class="stat-info">
-          <div class="stat-value" id="usage-rate">0%</div>
-          <div class="stat-label">Taxa de Uso</div>
-        </div>
-      </div>
+    </header>
+
+    <!-- Summary stat chips -->
+    <div class="header-stats">
+      <div class="stat-chip"><span class="stat-value" id="total-templates">0</span><span class="stat-label">Templates</span></div>
+      <div class="stat-chip"><span class="stat-value" id="youtube-templates">0</span><span class="stat-label">Padrão</span></div>
+      <div class="stat-chip"><span class="stat-value" id="quick-templates">0</span><span class="stat-label">Rápidos</span></div>
+      <div class="stat-chip"><span class="stat-value" id="usage-rate">0%</span><span class="stat-label">Taxa de uso</span></div>
     </div>
 
-    <div class="templates-grid" id="templates-grid">
-      <div class="template-card loading-state">
-        <div class="loading-icon">📋</div>
-        <p>Carregando templates...</p>
+    <!-- Template grid (Explore: scannable grid with filters) -->
+    <div class="card mt-lg">
+      <div class="card-header">
+        <span class="card-icon" aria-hidden="true">F</span>
+        <div>
+          <h3 class="card-title">Biblioteca de Templates</h3>
+          <p class="card-subtitle">Explore, visualize e gerencie seus templates de publicação</p>
+        </div>
+      </div>
+      <div class="filters-grid">
+        <div class="form-group">
+          <label for="filter-type">Tipo</label>
+          <select id="filter-type">
+            <option value="">Todos os tipos</option>
+            <option value="standard">Padrão</option>
+            <option value="quick">Rápido</option>
+            <option value="detailed">Detalhado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-language">Idioma</label>
+          <select id="filter-language">
+            <option value="">Todos</option>
+            <option value="pt">Português</option>
+            <option value="en">Inglês</option>
+            <option value="es">Espanhol</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-search">Buscar</label>
+          <input type="text" id="filter-search" placeholder="Nome, descrição...">
+        </div>
+      </div>
+
+      <div id="templates-grid" class="template-grid">
+        <div class="loading-state">
+          <p>Carregando templates…</p>
+        </div>
       </div>
     </div>
   </main>
 
+  <!-- Template form modal -->
   <div id="template-modal" class="modal">
     <div class="modal-content large-modal">
       <div class="modal-header">
         <h3 id="modal-title">Novo Template</h3>
-        <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        <button class="modal-close" onclick="closeTemplateModal()" type="button">&times;</button>
       </div>
-      <div class="modal-body">
-        <form id="template-form">
-          <div class="form-grid">
-            <div class="form-group full-width">
-              <label for="template-name">Nome do Template</label>
-              <input type="text" id="template-name" required placeholder="Ex: Standard YouTube Upload">
-            </div>
-            
-            <div class="form-group">
-              <label for="template-type">Tipo</label>
-              <select id="template-type" required>
-                <option value="">Selecione um tipo</option>
-                <option value="standard">Standard YouTube</option>
-                <option value="quick">Quick Upload</option>
-                <option value="detailed">Detailed YouTube</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="template-language">Idioma</label>
-              <select id="template-language" required>
-                <option value="">Selecione um idioma</option>
-                <option value="pt">Português</option>
-                <option value="en">Inglês</option>
-                <option value="es">Espanhol</option>
-                <option value="fr">Francês</option>
-                <option value="de">Alemão</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="template-default">Definir como padrão</label>
-              <select id="template-default">
-                <option value="false">Não</option>
-                <option value="true">Sim</option>
-              </select>
-            </div>
-            
-            <div class="form-group full-width">
-              <label for="template-description">Descrição</label>
-              <textarea id="template-description" rows="3" placeholder="Descreva este template..."></textarea>
-            </div>
-            
-            <div class="form-group full-width">
-              <label for="template-settings">Configurações do Template</label>
-              <div class="template-settings-editor">
-                <textarea id="template-settings" rows="8" placeholder='{"quality": "hd", "duration": 3600, "tags": ["technology", "tutorial"]}'></textarea>
-              </div>
-            </div>
+      <form id="template-form">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="template-name">Nome</label>
+            <input type="text" id="template-name" placeholder="Ex: Standard YouTube Upload" required>
           </div>
-          
-          <div class="form-actions">
-            <button type="button" class="btn-secondary" onclick="closeTemplateModal()">
-              Cancelar
-            </button>
-            <button type="submit" class="btn-primary">
-              <span>💾</span>
-              <span>Salvar Template</span>
-            </button>
+          <div class="form-group">
+            <label for="template-type">Tipo</label>
+            <select id="template-type" required>
+              <option value="">Selecione um tipo</option>
+              <option value="standard">Padrão YouTube</option>
+              <option value="quick">Quick Upload</option>
+              <option value="detailed">Detalhado</option>
+            </select>
           </div>
-        </form>
-      </div>
+          <div class="form-group">
+            <label for="template-language">Idioma</label>
+            <select id="template-language">
+              <option value="">Selecione um idioma</option>
+              <option value="pt">Português</option>
+              <option value="en">Inglês</option>
+              <option value="es">Espanhol</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="template-description">Descrição</label>
+            <textarea id="template-description" rows="3" placeholder="Descreva este template..."></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label for="template-settings">Configurações (JSON)</label>
+            <textarea id="template-settings" rows="6" placeholder='{"quality": "1080p", "tags": ["tutorial"]}'></textarea>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-secondary" onclick="closeTemplateModal()" type="button">Cancelar</button>
+          <button class="btn-primary" type="submit">Salvar</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <div id="notification-container" class="notification-container"></div>
-
-  <style>
-    .page-header { background: var(--bg-gradient); padding: 3rem 2rem; margin-bottom: 2rem; border-radius: var(--radius-lg); margin: 2rem var(--spacing-xl) var(--spacing-lg); position: relative; overflow: hidden; }
-    .page-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), transparent); z-index: 1; }
-    .header-content { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; position: relative; z-index: 2; }
-    .header-actions { display: flex; gap: 1rem; position: relative; z-index: 2; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-    .stat-card-large { background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; border: 1px solid var(--border); transition: all var(--transition-normal); position: relative; overflow: hidden; }
-    .stat-card-large::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--success), var(--info)); opacity: 0; transition: opacity var(--transition-normal); }
-    .stat-card-large:hover::before { opacity: 1; }
-    .stat-card-large:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--success); }
-    .stat-icon { font-size: 2rem; width: 40px; height: 40px; background: var(--bg-elevated); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-    .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--text); }
-    .stat-label { font-size: 0.875rem; color: var(--text-secondary); }
-
-    .templates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
-    .template-card { background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; transition: all var(--transition-normal); position: relative; }
-    .template-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--success); }
-    .template-card.used { opacity: 0.7; }
-    .template-card.used::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--success); z-index: 1; }
-    .template-card-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
-    .template-icon { font-size: 2rem; width: 50px; height: 50px; background: var(--bg-surface); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; }
-    .template-title { font-size: 1.25rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
-    .template-meta { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    .template-badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 500; }
-    .template-badge.standard { background: rgba(33, 150, 243, 0.2); color: var(--info); border: 1px solid rgba(33, 150, 243, 0.4); }
-    .template-badge.quick { background: rgba(255, 152, 0, 0.2); color: var(--warning); border: 1px solid rgba(255, 152, 0, 0.4); }
-    .template-badge.detailed { background: rgba(156, 39, 176, 0.2); color: var(--purple); border: 1px solid rgba(156, 39, 176, 0.4); }
-    .template-card-body { padding: 1.5rem; }
-    .template-description { color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
-    .template-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
-    .stat-item { text-align: center; padding: 0.75rem; background: var(--bg-elevated); border-radius: 8px; }
-    .stat-value { font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
-    .stat-label { font-size: 0.75rem; color: var(--text-secondary); }
-    .template-card-footer { padding: 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
-    .template-action-btn { flex: 1; padding: 0.75rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-    .template-action-btn:hover { background: var(--success); color: white; border-color: var(--success); }
-    .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; color: var(--text-secondary); }
-    .loading-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
-    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 2000; align-items: center; justify-content: center; }
-    .modal.show { display: flex; }
-    .modal.large-modal { align-items: flex-start; padding-top: 5rem; }
-    .modal-content { background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
-    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; border-radius: var(--radius-sm); }
-    .modal-close:hover { background: var(--bg-elevated); color: var(--text); }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
-    .form-group.full-width { grid-column: 1 / -1; }
-    .template-settings-editor textarea { font-family: 'SF Mono', Monaco, monospace; font-size: 0.875rem; }
-    @media (max-width: 768px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .templates-grid { grid-template-columns: 1fr; }
-      .modal.large-modal { padding-top: 2rem; }
-      .modal-content { padding: 1rem; }
-    }
-  </style>
 
   <script>
     let templatesData = [];
@@ -243,89 +151,58 @@
       try {
         const response = await fetch('/api/templates');
         templatesData = await response.json();
-        
-        updateTemplateStats();
+        updateStats();
         displayTemplates(templatesData);
       } catch (error) {
-        console.error('Error loading templates:', error);
+        console.error('Erro ao carregar templates:', error);
         showNotification('Erro ao carregar templates', 'error');
       }
     }
 
-    function updateTemplateStats() {
+    function updateStats() {
       const total = templatesData.length;
-      const youtubeTemplates = templatesData.filter(t => t.tipo === 'standard').length;
-      const quickTemplates = templatesData.filter(t => t.tipo === 'quick').length;
-      const usageRate = total > 0 ? ((templatesData.reduce((sum, t) => sum + t.uso, 0) / (total * 10)) * 100).toFixed(0) : 0;
-      
+      const youtube = templatesData.filter(t => t.tipo === 'standard').length;
+      const quick = templatesData.filter(t => t.tipo === 'quick').length;
+      const usageRate = total > 0
+        ? ((templatesData.reduce((s, t) => s + (t.uso || 0), 0) / (total * 10)) * 100).toFixed(0)
+        : 0;
       document.getElementById('total-templates').textContent = total;
-      document.getElementById('youtube-templates').textContent = youtubeTemplates;
-      document.getElementById('quick-templates').textContent = quickTemplates;
+      document.getElementById('youtube-templates').textContent = youtube;
+      document.getElementById('quick-templates').textContent = quick;
       document.getElementById('usage-rate').textContent = `${usageRate}%`;
     }
 
     function displayTemplates(templates) {
-      const templatesGrid = document.getElementById('templates-grid');
-      
-      if (templates.length === 0) {
-        templatesGrid.innerHTML = `
-          <div class="template-card loading-state">
-            <div class="loading-icon">📋</div>
-            <p>Nenhum template encontrado</p>
-          </div>
-        `;
+      const grid = document.getElementById('templates-grid');
+      if (!templates || templates.length === 0) {
+        grid.innerHTML = '<div class="loading-state"><p>Nenhum template encontrado.</p></div>';
         return;
       }
-      
-      templatesGrid.innerHTML = templates.map(template => `
-        <div class="template-card ${template.uso > 0 ? 'used' : ''}">
+      grid.innerHTML = templates.map(t => `
+        <div class="template-card ${t.uso > 0 ? 'used' : ''}">
           <div class="template-card-header">
-            <div class="template-icon">${getTemplateIcon(template.tipo)}</div>
-            <div class="template-badges">
-              <div class="template-badge ${template.tipo}">
-                ${template.tipo === 'standard' ? 'Standard' : 
-                  template.tipo === 'quick' ? 'Quick' : 
-                  template.tipo === 'detailed' ? 'Detailed' : template.tipo}
-              </div>
-              ${template.idioma ? `
-                <div class="template-badge language">
-                  ${template.idioma.toUpperCase()}
-                </div>
-              ` : ''}
+            <div class="template-icon">${getTemplateTypeIcon(t.tipo)}</div>
+            <div>
+              <h4 class="template-title">${t.nome}</h4>
+              <span class="template-badge ${t.tipo}">${t.tipo === 'standard' ? 'Padrão' : t.tipo === 'quick' ? 'Rápido' : 'Detalhado'}</span>
             </div>
           </div>
-          
           <div class="template-card-body">
-            <h3 class="template-title">${template.nome}</h3>
-            <p class="template-description">${template.descricao}</p>
-            
+            <p class="template-description">${t.descricao || 'Sem descrição.'}</p>
             <div class="template-stats">
-              <div class="stat-item">
-                <div class="stat-value">${template.uso || 0}</div>
-                <div class="stat-label">Usos</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">${template.tempoMedio}s</div>
-                <div class="stat-label">Tempo Médio</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">$${template.custo || '0.00'}</div>
-                <div class="stat-label">Custo</div>
-              </div>
+              <div class="stat-item"><span class="stat-value">${t.uso || 0}</span><span class="stat-label">usos</span></div>
+              <div class="stat-item"><span class="stat-value">$${t.custo || '0.00'}</span><span class="stat-label">custo</span></div>
+              <div class="stat-item"><span class="stat-value">${t.tempoMedio || 0}s</span><span class="stat-label">média</span></div>
             </div>
           </div>
-          
           <div class="template-card-footer">
-            <button class="template-action-btn" onclick="viewTemplateDetails('${template._id}')">
-              <span>👁️</span>
-              <span>Ver Detalhes</span>
+            <button class="template-action-btn" onclick="viewTemplateDetails('${t._id}')" title="Ver detalhes">
+              <span>Ver</span>
             </button>
-            <button class="template-action-btn" onclick="editTemplate('${template._id}')">
-              <span>✏️</span>
+            <button class="template-action-btn" onclick="editTemplate('${t._id}')" title="Editar">
               <span>Editar</span>
             </button>
-            <button class="template-action-btn" onclick="deleteTemplate('${template._id}')">
-              <span>🗑️</span>
+            <button class="template-action-btn" onclick="deleteTemplate('${t._id}')" title="Excluir">
               <span>Excluir</span>
             </button>
           </div>
@@ -333,95 +210,33 @@
       `).join('');
     }
 
-    function getTemplateIcon(templateType) {
-      const icons = {
-        'standard': '📹',
-        'quick': '⚡',
-        'detailed': '🎬',
-        'custom': '🎨'
-      };
-      return icons[templateType] || '📄';
-    }
+    const typeIcons = { standard: 'YT', quick: 'Q', detailed: 'D', custom: 'C' };
+    function getTemplateTypeIcon(tipo) { return typeIcons[tipo] || 'T'; }
 
     function showTemplateModal() {
-      const modal = document.getElementById('template-modal');
-      const title = document.getElementById('modal-title');
-      title.textContent = 'Novo Template';
-      modal.classList.add('show');
+      document.getElementById('modal-title').textContent = 'Novo Template';
+      document.getElementById('template-modal').classList.add('show');
     }
-
     function closeTemplateModal() {
       document.getElementById('template-modal').classList.remove('show');
     }
 
-    document.getElementById('template-form')?.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const formData = {
-        nome: document.getElementById('template-name').value,
-        tipo: document.getElementById('template-type').value,
-        idioma: document.getElementById('template-language').value,
-        default: document.getElementById('template-default').value === 'true',
-        descricao: document.getElementById('template-description').value,
-        settings: JSON.parse(document.getElementById('template-settings').value || '{}')
-      };
-      
-      try {
-        const response = await fetch('/api/templates', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          closeTemplateModal();
-          loadTemplates();
-          showNotification('Template criado com sucesso!', 'success');
-        } else {
-          showNotification(`Erro: ${result.error}`, 'error');
-        }
-      } catch (error) {
-        console.error('Error creating template:', error);
-        showNotification('Erro ao criar template', 'error');
-      }
-    });
-
-    function viewTemplateDetails(templateId) {
-      showNotification(`Visualizar template ${templateId}`, 'info');
-    }
-
-    function editTemplate(templateId) {
-      showNotification(`Editar template ${templateId}`, 'info');
-    }
-
-    function deleteTemplate(templateId) {
-      if (confirm('Tem certeza que deseja excluir este template?')) {
-        showNotification(`Excluir template ${templateId}`, 'warning');
-      }
+    function viewTemplateDetails(id) { showNotification(`Template ${id}`, 'info'); }
+    function editTemplate(id) { showNotification(`Editar ${id}`, 'info'); }
+    function deleteTemplate(id) {
+      if (confirm('Excluir este template?')) showNotification(`Excluído ${id}`, 'warning');
     }
 
     function exportTemplates() {
-      const templatesJson = JSON.stringify(templatesData, null, 2);
-      const blob = new Blob([templatesJson], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(templatesData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `templates-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
-      showNotification('Templates exportados com sucesso!', 'success');
+      showNotification('Templates exportados.', 'success');
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      loadTemplates();
-    });
 
     function showNotification(message, type = 'info') {
       const container = document.getElementById('notification-container');
@@ -429,11 +244,39 @@
       notification.className = `notification ${type}`;
       notification.innerHTML = `
         <span class="notification-message">${message}</span>
-        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+        <button class="notification-close" onclick="this.parentElement.remove()" type="button">&times;</button>
       `;
       container.appendChild(notification);
       setTimeout(() => notification.remove(), 5000);
     }
+
+    document.getElementById('template-form')?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      closeTemplateModal();
+      loadTemplates();
+      showNotification('Template criado.', 'success');
+    });
+
+    // Filter handlers
+    document.getElementById('filter-type')?.addEventListener('change', applyFilters);
+    document.getElementById('filter-language')?.addEventListener('change', applyFilters);
+    document.getElementById('filter-search')?.addEventListener('input', () => {
+      setTimeout(applyFilters, 300);
+    });
+
+    function applyFilters() {
+      const type = document.getElementById('filter-type').value;
+      const lang = document.getElementById('filter-language').value;
+      const search = document.getElementById('filter-search').value.toLowerCase();
+      const filtered = templatesData.filter(t =>
+        (!type || t.tipo === type) &&
+        (!lang || t.idioma === lang) &&
+        (!search || (t.nome || '').toLowerCase().includes(search) || (t.descricao || '').toLowerCase().includes(search))
+      );
+      displayTemplates(filtered);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadTemplates);
   </script>
 </body>
 </html>

@@ -6,7 +6,7 @@ const rateLimit = require('../middleware/rateLimit');
 
 const configService = new ConfigService();
 
-// Health check endpoint
+// Health check endpoint (used by frontend)
 router.get('/health', auth, async (req, res) => {
   try {
     const configured = await configService.isSystemConfigured();
@@ -21,7 +21,7 @@ router.get('/health', auth, async (req, res) => {
   }
 });
 
-// Setup complete endpoint
+// Complete setup endpoint (used by frontend)
 router.post('/complete', auth, rateLimit.publish, async (req, res) => {
   try {
     await configService.saveConfig(req.body);
@@ -31,7 +31,7 @@ router.post('/complete', auth, rateLimit.publish, async (req, res) => {
   }
 });
 
-// Provider management endpoints
+// Provider management endpoints (used by frontend)
 router.get('/providers', auth, async (req, res) => {
   try {
     const providers = await configService.listProviders();

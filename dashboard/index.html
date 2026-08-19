@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <script>(async function(){try{const r=await fetch("/api/config/browser-key");const k=await r.json();if(k.apiKey&&k.apiKey.length>0){const f=window.fetch;window.fetch=function(u,o=o){o.headers=o.headers||{};o.headers["x-api-key"]=k.apiKey;return f(u,o);}}}catch(e){}})();</script>
   <nav class="app-nav">
     <a href="/" class="nav-brand">
       <span class="brand-dot"></span>
@@ -57,7 +58,7 @@
       <!-- Execution list -->
       <div class="card">
         <div class="card-header">
-          <span class="card-icon" aria-hidden="true">&#9654;</span>
+          <span class="card-icon" aria-hidden="true">E</span>
           <div>
             <h3 class="card-title">Execuções recentes</h3>
             <p class="card-subtitle">Últimas 5 execuções do pipeline</p>
@@ -76,7 +77,7 @@
       <!-- Metrics summary -->
       <div class="card">
         <div class="card-header">
-          <span class="card-icon" aria-hidden="true">&#128202;</span>
+          <span class="card-icon" aria-hidden="true">M</span>
           <div>
             <h3 class="card-title">Métricas rápidas</h3>
             <p class="card-subtitle">Indicadores principais</p>

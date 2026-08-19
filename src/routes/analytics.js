@@ -20,9 +20,9 @@ router.get('/analytics', auth, async (req, res) => {
     const dados = {
       periodo,
       totalExecucoes: executions.length,
-      sucesso: executions.filter(e => e.status === 'concluido').length,
-      falha: executions.filter(e => e.status === 'falha').length,
-      estimativaGanhos: (executions.filter(e => e.status === 'concluido').length * 0.5).toFixed(2)
+      sucesso: executions.filter(e => e.status === 'success').length,
+      falha: executions.filter(e => e.status === 'error').length,
+      estimativaGanhos: (executions.filter(e => e.status === 'success').length * 0.5).toFixed(2)
     };
 
     res.json(dados);

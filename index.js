@@ -21,6 +21,11 @@ app.use(compression());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'dashboard')));
 
+// Endpoint for the frontend to retrieve the API key (same-origin only)
+app.get('/api/config/browser-key', (req, res) => {
+  res.json({ apiKey: process.env.API_KEY || '' });
+});
+
 async function startServer() {
   try {
     await initializeDatabase();
@@ -39,6 +44,14 @@ async function startServer() {
     // Montar rotas
     app.use('/setup', setupRoutes);
     app.use('/api', apiRoutes);
+    app.use('/api', require('./src/routes/execution'));
+    app.use('/api', require('./src/routes/templates'));
+    app.use('/api', require('./src/routes/schedule'));
+    app.use('/api', require('./src/routes/logs'));
+    app.use('/api', require('./src/routes/metrics'));
+    app.use('/api', require('./src/routes/config'));
+    app.use('/api', require('./src/routes/analytics'));
+    app.use('/api', require('./src/routes/costs'));
 
     app.listen(PORT, () => {
       logger.info(`Servidor rodando na porta ${PORT}`);

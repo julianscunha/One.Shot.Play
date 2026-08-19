@@ -96,13 +96,14 @@ class ConfigService {
   // ==================== Templates ====================
   async listTemplates() {
     const db = await this._getDb();
-    const rows = await db.getRows('SELECT id, nome, descricao, tipo, provedores, ativo, created_at FROM templates ORDER BY created_at DESC');
+    const rows = await db.getRows('SELECT id, nome, descricao, tipo, provedores, config, ativo, created_at FROM templates ORDER BY created_at DESC');
     return rows.map(r => ({
       id: r.id,
       nome: r.nome,
       descricao: r.descricao,
       tipo: r.tipo,
       provedores: r.provedores ? JSON.parse(r.provedores) : [],
+      config: r.config ? JSON.parse(r.config) : {},
       ativo: !!r.ativo,
       createdAt: r.created_at
     }));
@@ -127,11 +128,11 @@ class ConfigService {
   async createTemplate(data) {
     const db = await this._getDb();
     const id = db.generateId('tmpl_');
-    const _provedores = data.provedores ? JSON.stringify(data.provedores) : null;
+    const provedores = data.provedores ? JSON.stringify(data.provedores) : null;
     const config = data.config ? JSON.stringify(data.config) : null;
     await db.execute(
       'INSERT INTO templates (id, nome, descricao, tipo, provedores, config, ativo) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [id, data.nome, data.descricao, data.tipo, data.provedores ? JSON.stringify(data.provedores) : null, config, data.ativo !== false ? 1 : 0]
+      [id, data.nome, data.descricao, data.tipo, provedores, config, data.ativo !== false ? 1 : 0]
     );
     return { id, nome: data.nome, descricao: data.descricao, tipo: data.tipo, provedores: data.provedores, ativo: data.ativo !== false };
   }

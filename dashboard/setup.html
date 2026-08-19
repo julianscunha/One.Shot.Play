@@ -222,8 +222,52 @@
       inputs.forEach(input => {
         if (input.id && input.value) data[input.id] = input.value;
       });
-      providers[provider] = data;
-      showNotification(`${provider} salvo.`, 'success');
+
+      if (provider === 'openrouter') {
+        data.key = data['openrouter-key'];
+        data.model = data['openrouter-model'];
+      } else if (provider === 'youtube') {
+        data.key = data['youtube-key'];
+        data.channel = data['youtube-channel'];
+      } else if (provider === 'telegram') {
+        data.key = data['telegram-token'];
+        data.chat_id = data['telegram-chat'];
+      }
+
+      try {
+        await fetch('/api/providers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome: provider,
+            tipo: provider === 'openrouter' ? 'llm' : provider === 'youtube' ? 'api' : 'notification',
+            api_key: data.key,
+            endpoint: provider === 'openrouter' ? 'https://openrouter.ai/api' : provider === 'youtube' ? 'https://youtube.googleapis.com' : 'https://api.telegram.org',
+            config: JSON.stringify(data)
+          })
+        });
+        providers[provider] = data;
+        updateProviderStatus(provider, 'saved');
+        showNotification(`${provider} salvo com sucesso.`, 'success');
+      } catch (err) {
+        showNotification(`Erro ao salvar ${provider}.`, 'error');
+      }
+    }
+
+    function updateProviderStatus(provider, status) {
+      const card = document.querySelector(`[data-provider="${provider}"]`);
+      if (!card) return;
+      if (status === 'saved') {
+        const badge = card.querySelector('.status-badge');
+        if (badge) { badge.textContent = 'Configurado'; badge.className = 'status-badge success'; }
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const configured = Object.keys(providers).length;
+      const el = document.querySelector('.text-tertiary');
+      if (el) el.textContent = `${configured} de 3 configurados`;
     }
 
     function setupYouTubeOAuth() {
@@ -251,13 +295,27 @@
         return;
       }
       showNotification('Inicializando o sistema...', 'info');
-      setTimeout(() => {
+      try {
+        await fetch('/setup/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...providers,
+            system_configured: 'true',
+            setup_completed: 'true',
+            api_key: document.getElementById('api-key').value || undefined,
+            rate_limit: document.getElementById('rate-limit').value,
+            cache_duration: document.getElementById('cache-duration').value
+          })
+        });
         localStorage.setItem('one-shot-play-setup', JSON.stringify({
           providers, timestamp: new Date().toISOString(), status: 'completed'
         }));
         showNotification('Configuração concluída. Redirecionando...', 'success');
         setTimeout(() => { window.location.href = '/'; }, 1500);
-      }, 2000);
+      } catch (err) {
+        showNotification('Erro ao finalizar configuração.', 'error');
+      }
     }
 
     function showNotification(message, type) {

@@ -11,7 +11,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <script>(async function(){try{const r=await fetch("/api/config/browser-key");const k=await r.json();if(k.apiKey&&k.apiKey.length>0){const f=window.fetch;window.fetch=function(u,o=o){o.headers=o.headers||{};o.headers["x-api-key"]=k.apiKey;return f(u,o);}}}catch(e){}})();</script>
+  <script>
+    let _apiKey = "";
+    let _apiKeyPromise = null;
+    function loadApiKey() {
+      if (_apiKeyPromise) return _apiKeyPromise;
+      _apiKeyPromise = fetch("/api/config/browser-key").then(r => r.json()).then(k => { _apiKey = k.apiKey || ""; }).catch(() => { _apiKey = ""; });
+      return _apiKeyPromise;
+    }
+    const _origFetch = window.fetch;
+    window.fetch = function(url, options) {
+      options = options || {};
+      options.headers = options.headers || {};
+      if (_apiKey) options.headers["x-api-key"] = _apiKey;
+      return _origFetch(url, options);
+    };
+    loadApiKey();
+  </script>
   <nav class="app-nav">
     <a href="/" class="nav-brand">
       <span class="brand-dot"></span>

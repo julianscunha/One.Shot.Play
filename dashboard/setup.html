@@ -10,7 +10,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <script>(async function(){try{const r=await fetch("/api/config/browser-key");const k=await r.json();if(k.apiKey&&k.apiKey.length>0){const f=window.fetch;window.fetch=function(u,o=o){o.headers=o.headers||{};o.headers["x-api-key"]=k.apiKey;return f(u,o);}}}catch(e){}})();</script>
+  <script>
+    // Synchronously fetch API key and patch window.fetch to include it
+    let _apiKey = '';
+    let _apiKeyLoaded = false;
+    let _apiKeyPromise = null;
+
+    function loadApiKey() {
+      if (_apiKeyPromise) return _apiKeyPromise;
+      _apiKeyPromise = fetch('/api/config/browser-key')
+        .then(r => r.json())
+        .then(k => { _apiKey = k.apiKey || ''; _apiKeyLoaded = true; })
+        .catch(() => { _apiKey = ''; _apiKeyLoaded = true; });
+      return _apiKeyPromise;
+    }
+
+    // Patch fetch to auto-include x-api-key header
+    const _origFetch = window.fetch;
+    window.fetch = function(url, options) {
+      options = options || {};
+      options.headers = options.headers || {};
+      if (_apiKey) options.headers['x-api-key'] = _apiKey;
+      return _origFetch(url, options);
+    };
+
+    // Start loading the API key immediately
+    loadApiKey();
+  </script>
   <nav class="app-nav">
     <a href="/" class="nav-brand">
       <span class="brand-dot"></span>
@@ -216,6 +242,7 @@
     }
 
     async function saveProvider(provider) {
+      await loadApiKey();
       const card = document.querySelector(`[data-provider="${provider}"]`);
       const inputs = card.querySelectorAll('input, select');
       const data = {};
@@ -235,22 +262,28 @@
       }
 
       try {
-        await fetch('/api/providers', {
+        const response = await fetch('/api/providers', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            nome: provider,
+            nome: provider.charAt(0).toUpperCase() + provider.slice(1),
             tipo: provider === 'openrouter' ? 'llm' : provider === 'youtube' ? 'api' : 'notification',
             api_key: data.key,
             endpoint: provider === 'openrouter' ? 'https://openrouter.ai/api' : provider === 'youtube' ? 'https://youtube.googleapis.com' : 'https://api.telegram.org',
             config: JSON.stringify(data)
           })
         });
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || 'HTTP ' + response.status);
+        }
+
         providers[provider] = data;
         updateProviderStatus(provider, 'saved');
         showNotification(`${provider} salvo com sucesso.`, 'success');
       } catch (err) {
-        showNotification(`Erro ao salvar ${provider}.`, 'error');
+        showNotification(`Erro ao salvar ${provider}: ${err.message}`, 'error');
       }
     }
 
@@ -288,6 +321,7 @@
     }
 
     async function completeSetup() {
+      await loadApiKey();
       const required = ['openrouter', 'youtube'];
       const missing = required.filter(p => !providers[p]);
       if (missing.length > 0) {

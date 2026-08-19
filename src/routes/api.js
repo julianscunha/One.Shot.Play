@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { ConfigService } = require('../services/config');
+const { CostService } = require('../services/cost');
 const auth = require('../middleware/auth');
 const rateLimit = require('../middleware/rateLimit');
 
 const configService = new ConfigService();
+const costService = new CostService();
 
+// Health check endpoint
 router.get('/health', auth, async (req, res) => {
   try {
     const configured = await configService.isSystemConfigured();
@@ -20,6 +23,7 @@ router.get('/health', auth, async (req, res) => {
   }
 });
 
+// Execute endpoint
 router.post('/execute', auth, rateLimit.publish, async (req, res) => {
   try {
     const execution = await configService.createExecution(req.body);

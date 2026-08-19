@@ -23,7 +23,11 @@ app.use(express.static(path.join(__dirname, 'dashboard')));
 
 // Endpoint for the frontend to retrieve the API key (same-origin only)
 app.get('/api/config/browser-key', (req, res) => {
-  res.json({ apiKey: process.env.API_KEY || '' });
+  const key = process.env.API_KEY;
+  if (!key) {
+    console.log('API_KEY environment variable not set');
+  }
+  res.json({ apiKey: key || '' });
 });
 
 async function startServer() {

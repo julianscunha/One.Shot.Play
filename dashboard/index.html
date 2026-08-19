@@ -7,85 +7,195 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <nav class="navbar">
+  <nav class="youtube-nav">
     <div class="nav-brand">
-      <h1>🎬 YouTube Automation</h1>
+      <div class="nav-icon">🎬</div>
+      <h1>YouTube Automation</h1>
     </div>
-    <div class="nav-links">
-      <a href="/" class="active">Dashboard</a>
-      <a href="/settings.html">Configurações</a>
-      <a href="/templates.html">Templates</a>
-      <a href="/schedule.html">Agendamentos</a>
-      <a href="/logs.html">Logs</a>
-      <a href="/metrics.html">Métricas</a>
+    <div class="nav-sections">
+      <a href="/" class="nav-section active">
+        <div class="section-icon">📊</div>
+        <div class="section-content">
+          <div class="section-title">Dashboard</div>
+          <div class="section-desc">Visão geral e métricas</div>
+        </div>
+      </a>
+      <a href="/setup.html" class="nav-section">
+        <div class="section-icon">⚙️</div>
+        <div class="section-content">
+          <div class="section-title">Setup</div>
+          <div class="section-desc">Configurar provedores e API</div>
+        </div>
+      </a>
+      <a href="/execute.html" class="nav-section">
+        <div class="section-icon">🚀</div>
+        <div class="section-content">
+          <div class="section-title">Execute</div>
+          <div class="section-desc">Execuções manuais e monitoradas</div>
+        </div>
+      </a>
+      <a href="/templates.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content">
+          <div class="section-title">Templates</div>
+          <div class="section-desc">Gerenciar templates de publicação</div>
+        </div>
+      </a>
+      <a href="/schedule.html" class="nav-section">
+        <div class="section-icon">⏰</div>
+        <div class="section-content">
+          <div class="section-title">Agendamentos</div>
+          <div class="section-desc">Pipeline automatizado agendado</div>
+        </div>
+      </a>
+      <a href="/logs.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content">
+          <div class="section-title">Logs</div>
+          <div class="section-desc">Acompanhamento de atividades</div>
+        </div>
+      </a>
+      <a href="/metrics.html" class="nav-section">
+        <div class="section-icon">📈</div>
+        <div class="section-content">
+          <div class="section-title">Métricas</div>
+          <div class="section-desc">Análise de performance</div>
+        </div>
+      </a>
     </div>
   </nav>
 
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-icon">📊</div>
+      <div class="header-text">
+        <h1>Dashboard</h1>
+        <p>Visão geral do sistema de automação YouTube com métricas em tempo real</p>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Execuções Hoje</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Taxa de Sucesso</div>
+      </div>
+      <div class="stat-number">0</div>
+      <div class="stat-label">Erros Hoje</div>
+    </div>
+  </header>
+
   <main class="container">
-    <div class="grid">
+    <div class="grid grid-2">
       <div class="card">
-        <h2>Status do Sistema</h2>
-        <div id="system-status">
-          <div class="loading">Carregando...</div>
+        <div class="card-header">
+          <div class="card-icon">🚀</div>
+          <div>
+            <h3 class="card-title">Execuções Recentes</h3>
+            <p class="card-subtitle">Últimas execuções do pipeline</p>
+          </div>
+        </div>
+        <div id="executions-list">
+          <div class="loading-state">
+            <div class="loading-icon">⏳</div>
+            <p>Carregando execuções...</p>
+          </div>
         </div>
       </div>
-
       <div class="card">
-        <h2>Execuções</h2>
-        <div id="executions">
-          <div class="loading">Carregando...</div>
+        <div class="card-header">
+          <div class="card-icon">📈</div>
+          <div>
+            <h3 class="card-title">Métricas Rápidas</h3>
+            <p class="card-subtitle">Indicadores principais</p>
+          </div>
         </div>
-      </div>
-
-      <div class="card">
-        <h2>APIs</h2>
-        <div id="apis">
-          <div class="loading">Carregando...</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Ações Rápidas</h2>
-        <div class="actions">
-          <a href="/execute.html" class="btn-primary">Executar Manualmente</a>
-          <a href="/schedule.html" class="btn-secondary">Gerenciar Agendamentos</a>
+        <div id="metrics-summary">
+          <div class="loading-state">
+            <div class="loading-icon">⏳</div>
+            <p>Carregando métricas...</p>
+          </div>
         </div>
       </div>
     </div>
   </main>
 
+  <div id="notification-container" class="notification-container"></div>
+
   <script>
-    async function loadDashboard() {
+    async function loadDashboardData() {
       try {
-        const healthRes = await fetch('/api/health');
-        const health = await healthRes.json();
-        document.getElementById('system-status').innerHTML = `
-          <p><strong>Status:</strong> ${health.status === 'healthy' ? '🟢 Saudável' : '🔴 Erro'}</p>
-          <p><strong>Uptime:</strong> ${Math.round(health.uptime / 60)} minutos</p>
-          <p><strong>Configurado:</strong> ${health.configured ? 'Sim' : 'Não'}</p>
-        `;
-
-        const metricsRes = await fetch('/api/metrics');
+        const [execRes, metricsRes] = await Promise.all([
+          fetch('/api/executions'),
+          fetch('/api/metrics')
+        ]);
+        
+        const executions = await execRes.json();
         const metrics = await metricsRes.json();
-        document.getElementById('executions').innerHTML = `
-          <p><strong>Total:</strong> ${metrics.total}</p>
-          <p><strong>Sucesso:</strong> ${metrics.sucesso}</p>
-          <p><strong>Falha:</strong> ${metrics.falha}</p>
-          <p><strong>Taxa de Sucesso:</strong> ${metrics.taxaSucesso}</p>
-        `;
-
-        document.getElementById('apis').innerHTML = `
-          <p><strong>OpenRouter:</strong> 🟢 Online</p>
-          <p><strong>YouTube:</strong> 🟢 Online</p>
-          <p><strong>Telegram:</strong> 🟢 Online</p>
-        `;
+        
+        updateExecutionsList(executions);
+        updateMetricsSummary(metrics);
       } catch (error) {
-        console.error('Erro ao carregar dashboard:', error);
+        console.error('Error loading dashboard:', error);
+        showNotification('Erro ao carregar dados do dashboard', 'error');
       }
     }
 
-    loadDashboard();
-    setInterval(loadDashboard, 30000);
+    function updateExecutionsList(executions) {
+      const container = document.getElementById('executions-list');
+      if (executions.length === 0) {
+        container.innerHTML = `
+          <div class="loading-state">
+            <div class="loading-icon">📝</div>
+            <p>Nenhuma execução encontrada</p>
+          </div>
+        `;
+        return;
+      }
+      container.innerHTML = executions.slice(0, 5).map(e => `
+        <div class="execution-item">
+          <div class="execution-status ${e.status}">${e.status}</div>
+          <div class="execution-info">
+            <strong>${e.template}</strong>
+            <span>${new Date(e.timestamp).toLocaleString()}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateMetricsSummary(metrics) {
+      const container = document.getElementById('metrics-summary');
+      container.innerHTML = `
+        <div class="metric-item">
+          <span>Total Execuções:</span>
+          <span class="metric-value">${metrics.total || 0}</span>
+        </div>
+        <div class="metric-item">
+          <span>Taxa de Sucesso:</span>
+          <span class="metric-value success">${metrics.taxaSucesso || 0}%</span>
+        </div>
+        <div class="metric-item">
+          <span>Custo Total:</span>
+          <span class="metric-value">$${(metrics.custoTotal || 0).toFixed(2)}</span>
+        </div>
+      `;
+    }
+
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+      `;
+      container.appendChild(notification);
+      setTimeout(() => notification.remove(), 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDashboardData);
   </script>
 </body>
 </html>

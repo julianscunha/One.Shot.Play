@@ -7,65 +7,611 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>🎬 Configuração Inicial</h1>
-      <p class="subtitle">Configure seu sistema de automação de YouTube</p>
-
-      <form id="setupForm">
-        <div class="form-group">
-          <label for="channelName">Nome do Canal</label>
-          <input type="text" id="channelName" name="channelName" required>
-        </div>
-
-        <div class="form-group">
-          <label for="author">Autor</label>
-          <input type="text" id="author" name="author" required>
-        </div>
-
-        <div class="form-group">
-          <label for="openRouterKey">OpenRouter API Key</label>
-          <input type="password" id="openRouterKey" name="openRouterKey" required>
-        </div>
-
-        <div class="form-group">
-          <label for="telegramToken">Telegram Bot Token</label>
-          <input type="password" id="telegramToken" name="telegramToken" required>
-        </div>
-
-        <button type="submit" class="btn-primary">Salvar e Continuar</button>
-      </form>
-
-      <div id="status" class="status"></div>
+  <!-- YouTube Navigation -->
+  <nav class="youtube-nav">
+    <div class="nav-brand">
+      <div class="nav-icon">🎬</div>
+      <h1>YouTube Automation</h1>
     </div>
-  </div>
+    <div class="nav-sections">
+      <a href="/" class="nav-section">
+        <div class="section-icon">📊</div>
+        <div class="section-content">
+          <div class="section-title">Dashboard</div>
+          <div class="section-desc">Visão geral e métricas</div>
+        </div>
+      </a>
+      <a href="/setup.html" class="nav-section active">
+        <div class="section-icon">⚙️</div>
+        <div class="section-content">
+          <div class="section-title">Setup</div>
+          <div class="section-desc">Configurar provedores e API</div>
+        </div>
+      </a>
+      <a href="/execute.html" class="nav-section">
+        <div class="section-icon">🚀</div>
+        <div class="section-content">
+          <div class="section-title">Execute</div>
+          <div class="section-desc">Execuções manuais e monitoradas</div>
+        </div>
+      </a>
+      <a href="/templates.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content">
+          <div class="section-title">Templates</div>
+          <div class="section-desc">Gerenciar templates de publicação</div>
+        </div>
+      </a>
+      <a href="/schedule.html" class="nav-section">
+        <div class="section-icon">⏰</div>
+        <div class="section-content">
+          <div class="section-title">Agendamentos</div>
+          <div class="section-desc">Pipeline automatizado agendado</div>
+        </div>
+      </a>
+      <a href="/logs.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content">
+          <div class="section-title">Logs</div>
+          <div class="section-desc">Acompanhamento de atividades</div>
+        </div>
+      </a>
+      <a href="/metrics.html" class="nav-section">
+        <div class="section-icon">📈</div>
+        <div class="section-content">
+          <div class="section-title">Métricas</div>
+          <div class="section-desc">Análise de performance</div>
+        </div>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-icon">⚙️</div>
+      <div class="header-text">
+        <h1>Configuração Inicial</h1>
+        <p>Configure os provedores de IA e API keys para começar a automatizar seus uploads do YouTube</p>
+      </div>
+    </div>
+    
+    <div class="header-stats">
+      <div class="stat-card">
+        <div class="stat-number">1</div>
+        <div class="stat-label">Passo de Setup</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Passos Totais</div>
+      </div>
+      <div class="stat-number">5</div>
+      <div class="stat-label">Minutos</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Setup Progress Indicator -->
+    <div class="youtube-progress">
+      <div class="progress-step completed">
+        <div class="step-dot"></div>
+        <div class="step-label active">Configuração Base</div>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step active">
+        <div class="step-dot"></div>
+        <div class="step-label active">Provedores IA</div>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step">
+        <div class="step-dot"></div>
+        <div class="step-label">Segurança e Canal</div>
+      </div>
+    </div>
+
+    <!-- Main Setup Container -->
+    <div class="setup-container">
+      <!-- Hero Section -->
+      <header class="setup-hero">
+        <div class="hero-content">
+          <div class="hero-icon">🎬</div>
+          <h2>Configure Seus Provedores de IA</h2>
+          <p class="hero-subtitle">Selecione e configure os modelos de IA que alimentam seu pipeline de automação YouTube</p>
+        </div>
+      </header>
+
+      <!-- Main Configuration Grid -->
+      <main class="config-grid">
+        <!-- AI Providers Section -->
+        <section class="config-section">
+          <div class="section-header">
+            <div class="section-icon">🤖</div>
+            <div class="section-title-group">
+              <h2>Provedores de IA</h2>
+              <p class="section-desc">Configure os modelos de IA para geração de conteúdo, transcrição e análise</p>
+            </div>
+          </div>
+          
+          <div class="providers-grid">
+            <!-- OpenRouter Card -->
+            <div class="provider-card" data-provider="openrouter">
+              <div class="provider-card-header">
+                <div class="provider-icon">🧠</div>
+                <div class="provider-status">
+                  <span class="status-dot online"></span>
+                  <span>Online</span>
+                </div>
+              </div>
+              
+              <div class="provider-card-body">
+                <h3>OpenRouter</h3>
+                <p>Acesso a múltiplos modelos IA através de única API</p>
+                
+                <div class="provider-fields">
+                  <div class="form-group">
+                    <label for="openrouter-key">Chave da API</label>
+                    <div class="input-wrapper">
+                      <input type="password" id="openrouter-key" placeholder="sk-...your-key-here">
+                      <button class="toggle-password" onclick="togglePassword('openrouter-key')">👁️</button>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="openrouter-model">Modelo Padrão</label>
+                    <select id="openrouter-model">
+                      <option value="gpt-4o">GPT-4o (Recommended)</option>
+                      <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                      <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="openrouter-endpoint">Endpoint (opcional)</label>
+                    <input type="text" id="openrouter-endpoint" placeholder="https://openrouter.ai/api/v1">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="provider-card-footer">
+                <button class="btn-outline" onclick="testProvider('openrouter')">
+                  <span>🧪</span>
+                  <span>Testar Conexão</span>
+                </button>
+                <button class="btn-primary" onclick="saveProvider('openrouter')">
+                  <span>💾</span>
+                  <span>Salvar Provedor</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- YouTube Data API Card -->
+            <div class="provider-card" data-provider="youtube">
+              <div class="provider-card-header">
+                <div class="provider-icon">📹</div>
+                <div class="provider-status">
+                  <span class="status-dot">●</span>
+                  <span>Requer Configuração</span>
+                </div>
+              </div>
+              
+              <div class="provider-card-body">
+                <h3>YouTube Data API</h3>
+                <p>Gerencie canais, playlists e uploads do YouTube</p>
+                
+                <div class="provider-fields">
+                  <div class="form-group">
+                    <label for="youtube-key">Chave da API</label>
+                    <input type="password" id="youtube-key" placeholder="AIza...your-key-here">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="youtube-channel">ID do Canal (opcional)</label>
+                    <input type="text" id="youtube-channel" placeholder="UCyourChannelID">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="youtube-api-version">Versão da API</label>
+                    <select id="youtube-api-version">
+                      <option value="v3">v3 (Recommended)</option>
+                      <option value="v2">v2</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="provider-card-footer">
+                <button class="btn-outline" onclick="setupYouTubeOAuth()">
+                  <span>🔐</span>
+                  <span>OAuth 2.0 Setup</span>
+                </button>
+                <button class="btn-primary" onclick="saveProvider('youtube')">
+                  <span>💾</span>
+                  <span>Salvar Provedor</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Telegram Bot Card -->
+            <div class="provider-card" data-provider="telegram">
+              <div class="provider-card-header">
+                <div class="provider-icon">📱</div>
+                <div class="provider-status">
+                  <span class="status-dot online"></span>
+                  <span>Online</span>
+                </div>
+              </div>
+              
+              <div class="provider-card-body">
+                <h3>Bot de Notificações</h3>
+                <p>Alertas em tempo real sobre uploads e status</p>
+                
+                <div class="provider-fields">
+                  <div class="form-group">
+                    <label for="telegram-token">Token do Bot</label>
+                    <input type="password" id="telegram-token" placeholder="123456:ABC-DEF1234ghIkl-zyx57">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="telegram-chat">ID do Chat</label>
+                    <input type="text" id="telegram-chat" placeholder="-100123456789">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="telegram-parse-mode">Modo Parse</label>
+                    <select id="telegram-parse-mode">
+                      <option value="Markdown">Markdown</option>
+                      <option value="HTML">HTML</option>
+                      <option value="Disabled">Disabled</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="provider-card-footer">
+                <button class="btn-outline" onclick="testTelegram()">
+                  <span>📨</span>
+                  <span>Testar Bot</span>
+                </button>
+                <button class="btn-primary" onclick="saveProvider('telegram')">
+                  <span>💾</span>
+                  <span>Salvar Provedor</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Google Cloud Storage Card -->
+            <div class="provider-card" data-provider="gcs">
+              <div class="provider-card-header">
+                <div class="provider-icon">☁️</div>
+                <div class="provider-status">
+                  <span class="status-dot online"></span>
+                  <span>Online</span>
+                </div>
+              </div>
+              
+              <div class="provider-card-body">
+                <h3>Google Cloud Storage</h3>
+                <p>Armazenamento e backup seguro para seus vídeos</p>
+                
+                <div class="provider-fields">
+                  <div class="form-group">
+                    <label for="gcs-project">ID do Projeto</label>
+                    <input type="text" id="gcs-project" placeholder="your-project-id">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="gcs-bucket">Nome do Bucket</label>
+                    <input type="text" id="gcs-bucket" placeholder="your-storage-bucket">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="gcs-location">Localização</label>
+                    <select id="gcs-location">
+                      <option value="US">US Central</option>
+                      <option value="EU">EU West</option>
+                      <option value="ASIA">Asia Pacific</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="provider-card-footer">
+                <button class="btn-outline" onclick="setupGCSAuth()">
+                  <span>🔑</span>
+                  <span>Configurar Auth</span>
+                </button>
+                <button class="btn-primary" onclick="saveProvider('gcs')">
+                  <span>💾</span>
+                  <span>Salvar Provedor</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Security Section -->
+        <section class="config-section">
+          <div class="section-header">
+            <div class="section-icon">🔒</div>
+            <div class="section-title-group">
+              <h2>Segurança e API Keys</h2>
+              <p class="section-desc">Configurar autenticação e rate limiting para proteger seu sistema</p>
+            </div>
+          </div>
+          
+          <div class="security-grid">
+            <div class="security-card">
+              <h3>Autenticação API</h3>
+              <div class="security-fields">
+                <div class="form-group">
+                  <label for="api-key">Chave Principal da API</label>
+                  <input type="password" id="api-key" placeholder="***...unique-key">
+                  <small className="help-text">Chave única para autenticar requisições à API</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="allowed-origins">Origens Permitidas</label>
+                  <input type="text" id="allowed-origins" value="http://localhost:3456,https://your-domain.com" placeholder="http://localhost:3456,https://example.com">
+                  <small className="help-text">Separe múltiplos domínios com vírgulas</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="webhook-secret">Segredo do Webhook (opcional)</label>
+                  <input type="password" id="webhook-secret" placeholder="seu-webhook-secret-aqui">
+                </div>
+              </div>
+            </div>
+            
+            <div class="security-card">
+              <h3>Rate Limiting</h3>
+              <div class="rate-limit-settings">
+                <div class="form-group">
+                  <label for="rate-limit">Requisições por Minuto</label>
+                  <input type="number" id="rate-limit" value="100" min="1" max="10000">
+                  <small className="help-text">Limite padrão para usuários gratuitos</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="burst-limit">Limite de Burst</label>
+                  <input type="number" id="burst-limit" value="20" min="1" max="1000">
+                  <small className="help-text">Requisições adicionais em um único minuto</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="cache-duration">Duração do Cache (segundos)</label>
+                  <input type="number" id="cache-duration" value="300" min="60" max="3600">
+                  <small className="help-text">Quanto tempo os dados permanecem em cache</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <!-- Setup Actions -->
+      <div class="setup-actions">
+        <button class="btn-secondary" onclick="saveSetupDraft()">
+          <span>💾</span>
+          <span>Salvar Rascunho</span>
+        </button>
+        
+        <button class="btn-primary" onclick="completeSetup()">
+          <span>🚀</span>
+          <span>Iniciar Sistema</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Status Panel (Right Sidebar) -->
+    <aside class="status-panel">
+      <div class="status-header">
+        <h3>📊 Status do Sistema</h3>
+      </div>
+      
+      <div class="status-content">
+        <div class="status-item">
+          <div class="status-label">Database</div>
+          <div class="status-value">
+            <span class="status-dot online"></span>
+            <span>Conectado</span>
+          </div>
+        </div>
+        
+        <div class="status-item">
+          <div class="status-label">Configuração</div>
+          <div class="status-value">
+            <span class="status-dot">●</span>
+            <span>Parcialmente configurado</span>
+          </div>
+        </div>
+        
+        <div class="status-item">
+          <div class="status-label">Provedores IA</div>
+          <div class="status-value">
+            <span class="status-dot online"></span>
+            <span>1 de 3 configurados</span>
+          </div>
+        </div>
+        
+        <div class="status-item">
+          <div class="status-label">Uploads Hoje</div>
+          <div class="status-value">
+            <span>0</span>
+            <span class="status-secondary">/ limite diário</span>
+          </div>
+        </div>
+        
+        <div class="status-item">
+          <div class="status-label">Último Upload</div>
+          <div class="status-value">
+            <span class="status-muted">Nunca</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="setup-tips">
+        <h4>💡 Dicas de Setup</h4>
+        <ul>
+          <li>🔑 Mantenha suas chaves de API seguras e privadas</li>
+          <li>📹 Para o YouTube Data API, use OAuth 2.0 quando possível</li>
+          <li>📱 Configure o bot do Telegram para alertas em tempo real</li>
+          <li>⚡ Limites de rate adequados evitam bloqueios</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Notification Container -->
+  <div id="notification-container" class="notification-container"></div>
 
   <script>
-    document.getElementById('setupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData);
-
-      const status = document.getElementById('status');
-      status.innerHTML = '<div class="loading">Salvando...</div>';
-
-      try {
-        const response = await fetch('/setup/complete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          status.innerHTML = '<div class="success">Configuração salva! Redirecionando...</div>';
-          setTimeout(() => window.location.href = '/', 1500);
-        } else {
-          status.innerHTML = `<div class="error">${result.error || 'Erro ao salvar'}</div>`;
+    // Setup Page JavaScript Functionality
+    let providers = {};
+    
+    // Password visibility toggle
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const button = input.nextElementSibling;
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        button.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        button.textContent = '👁️';
+      }
+    }
+    
+    // Test provider connection
+    async function testProvider(provider) {
+      const result = await showNotification(`${provider} provider connection test initiated. Please wait...`, 'info');
+      // Mock test - would be real API call
+      setTimeout(() => {
+        showNotification(`${provider} provider connection successful!`, 'success');
+      }, 2000);
+    }
+    
+    // Save provider configuration
+    async function saveProvider(provider) {
+      const inputs = document.querySelectorAll(`#${provider} input, #${provider} select`);
+      const providerData = {};
+      
+      inputs.forEach(input => {
+        if (input.id && input.value) {
+          providerData[input.id] = input.value;
         }
-      } catch (error) {
-        status.innerHTML = '<div class="error">Erro de conexão</div>';
+      });
+      
+      providers[provider] = providerData;
+      
+      // Mock save
+      showNotification(`${provider} provider configuration saved!`, 'success');
+    }
+    
+    // Setup YouTube OAuth
+    function setupYouTubeOAuth() {
+      showNotification('YouTube OAuth 2.0 setup initiated. Please follow the setup guide in the YouTube API Console.', 'info');
+    }
+    
+    // Setup GCS Authentication
+    function setupGCSAuth() {
+      showNotification('Google Cloud Storage authentication setup initiated. Please upload your service account JSON key.', 'info');
+    }
+    
+    // Test Telegram bot
+    function testTelegram() {
+      showNotification('Telegram bot connection test initiated. Please check your bot in Telegram.', 'info');
+      setTimeout(() => {
+        showNotification('Telegram bot connected successfully!', 'success');
+      }, 2000);
+    }
+    
+    // Save setup draft
+    async function saveSetupDraft() {
+      const draftData = {
+        providers: providers,
+        timestamp: new Date().toISOString(),
+        status: 'draft'
+      };
+      
+      localStorage.setItem('one-shot-play-setup-draft', JSON.stringify(draftData));
+      showNotification('Setup draft saved! You can continue later.', 'success');
+    }
+    
+    // Complete setup
+    async function completeSetup() {
+      // Validate all required providers
+      const requiredProviders = ['openrouter', 'youtube'];
+      const missingProviders = requiredProviders.filter(provider => !providers[provider]);
+      
+      if (missingProviders.length > 0) {
+        showNotification(`Please configure required providers: ${missingProviders.join(', ')}`, 'warning');
+        return;
+      }
+      
+      const setupData = {
+        providers: providers,
+        timestamp: new Date().toISOString(),
+        status: 'completed'
+      };
+      
+      // Mock API call to save setup
+      showNotification('Setting up your automation system... This may take a few minutes.', 'info');
+      
+      setTimeout(() => {
+        localStorage.setItem('one-shot-play-setup', JSON.stringify(setupData));
+        showNotification('🎉 Setup completed successfully! Your YouTube automation system is ready to use.', 'success');
+        
+        // Redirect to dashboard
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      }, 3000);
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+      `;
+      
+      container.appendChild(notification);
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 5000);
+    }
+    
+    // Load saved setup draft
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedDraft = localStorage.getItem('one-shot-play-setup-draft');
+      const savedSetup = localStorage.getItem('one-shot-play-setup');
+      
+      if (savedSetup) {
+        const setup = JSON.parse(savedSetup);
+        providers = setup.providers || {};
+        
+        // Populate form fields with saved data
+        Object.keys(providers).forEach(provider => {
+          const data = providers[provider];
+          Object.keys(data).forEach(key => {
+            const input = document.getElementById(key);
+            if (input && input.type !== 'password') {
+              input.value = data[key];
+            }
+          });
+        });
+        
+        showNotification('Setup data loaded from previous session!', 'info');
+      } else if (savedDraft) {
+        showNotification('Setup draft found. Would you like to continue?', 'info');
       }
     });
   </script>

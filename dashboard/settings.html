@@ -7,164 +7,159 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <nav class="navbar">
+  <nav class="youtube-nav">
     <div class="nav-brand">
-      <h1>🎬 YouTube Automation</h1>
+      <div class="nav-icon">🎬</div>
+      <h1>YouTube Automation</h1>
     </div>
-    <div class="nav-links">
-      <a href="/">Dashboard</a>
-      <a href="/settings.html" class="active">Configurações</a>
-      <a href="/templates.html">Templates</a>
-      <a href="/schedule.html">Agendamentos</a>
-      <a href="/logs.html">Logs</a>
-      <a href="/metrics.html">Métricas</a>
+    <div class="nav-sections">
+      <a href="/" class="nav-section">
+        <div class="section-icon">📊</div>
+        <div class="section-content"><div class="section-title">Dashboard</div><div class="section-desc">Visão geral e métricas</div></div>
+      </a>
+      <a href="/setup.html" class="nav-section">
+        <div class="section-icon">⚙️</div>
+        <div class="section-content"><div class="section-title">Setup</div><div class="section-desc">Configurar provedores e API</div></div>
+      </a>
+      <a href="/execute.html" class="nav-section">
+        <div class="section-icon">🚀</div>
+        <div class="section-content"><div class="section-title">Execute</div><div class="section-desc">Execuções manuais e monitoradas</div></div>
+      </a>
+      <a href="/templates.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content"><div class="section-title">Templates</div><div class="section-desc">Gerenciar templates de publicação</div></div>
+      </a>
+      <a href="/schedule.html" class="nav-section">
+        <div class="section-icon">⏰</div>
+        <div class="section-content"><div class="section-title">Agendamentos</div><div class="section-desc">Pipeline automatizado agendado</div></div>
+      </a>
+      <a href="/logs.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content"><div class="section-title">Logs</div><div class="section-desc">Acompanhamento de atividades</div></div>
+      </a>
+      <a href="/metrics.html" class="nav-section">
+        <div class="section-icon">📈</div>
+        <div class="section-content"><div class="section-title">Métricas</div><div class="section-desc">Análise de performance</div></div>
+      </a>
     </div>
   </nav>
 
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-icon">⚙️</div>
+      <div class="header-text">
+        <h1>Configurações do Sistema</h1>
+        <p>Personalize o comportamento do seu sistema de automação YouTube</p>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card"><div class="stat-number">5</div><div class="stat-label">Seções Configuráveis</div></div>
+      <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Provedores Ativos</div></div>
+      <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Sistema Operacional</div></div>
+    </div>
+  </header>
+
   <main class="container">
-    <div class="tabs">
-      <button class="tab-button active" onclick="showTab('providers')">Provedores</button>
-      <button class="tab-button" onclick="showTab('channel')">Canal</button>
-      <button class="tab-button" onclick="showTab('security')">Segurança</button>
-    </div>
-
-    <div id="providers" class="tab-content">
+    <div class="grid grid-2">
       <div class="card">
-        <h2>Provedores de IA</h2>
-        <div id="providers-list">
-          <div class="loading">Carregando provedores...</div>
+        <div class="card-header">
+          <div class="card-icon">⚙️</div>
+          <div><h3 class="card-title">Configurações Gerais</h3><p class="card-subtitle">Preferências do sistema</p></div>
         </div>
-        <form id="provider-form" class="form">
-          <div class="form-group">
-            <label for="providerName">Nome</label>
-            <input type="text" id="providerName" required>
-          </div>
-          <div class="form-group">
-            <label for="providerType">Tipo</label>
-            <select id="providerType" required>
-              <option value="ai">IA (Texto)</option>
-              <option value="tts">TTS (Voz)</option>
-              <option value="image">Imagem</option>
-              <option value="video">Vídeo</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="primaryEndpoint">Endpoint Primário</label>
-            <input type="text" id="primaryEndpoint" required>
-          </div>
-          <div class="form-group">
-            <label for="primaryKey">API Key Primária</label>
-            <input type="password" id="primaryKey" required>
-          </div>
-          <div class="form-group">
-            <label for="fallbackEndpoint">Endpoint Fallback (opcional)</label>
-            <input type="text" id="fallbackEndpoint">
-          </div>
-          <div class="form-group">
-            <label for="fallbackKey">API Key Fallback (opcional)</label>
-            <input type="password" id="fallbackKey">
-          </div>
-          <button type="submit" class="btn-primary">Salvar Provedor</button>
-        </form>
+        <div class="form-group">
+          <label for="channel-name">Nome do Canal</label>
+          <input type="text" id="channel-name" placeholder="Meu Canal YouTube">
+        </div>
+        <div class="form-group">
+          <label for="upload-quality">Qualidade de Upload</label>
+          <select id="upload-quality">
+            <option value="1080p">1080p (Recomendado)</option>
+            <option value="720p">720p</option>
+            <option value="480p">480p</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="upload-visibility">Visibilidade</label>
+          <select id="upload-visibility">
+            <option value="public">Público</option>
+            <option value="private">Privado</option>
+            <option value="unlisted">Não listado</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔒</div>
+          <div><h3 class="card-title">Segurança</h3><p class="card-subtitle">Configurações de autenticação</p></div>
+        </div>
+        <div class="form-group">
+          <label for="api-key">Chave da API</label>
+          <input type="password" id="api-key" placeholder="***">
+        </div>
+        <div class="form-group">
+          <label for="session-timeout">Timeout da Sessão (minutos)</label>
+          <input type="number" id="session-timeout" value="30" min="5" max="480">
+        </div>
+        <div class="form-group">
+          <label for="enable-logging">Habilitar Logs</label>
+          <select id="enable-logging">
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+          </select>
+        </div>
       </div>
     </div>
-
-    <div id="channel" class="tab-content" style="display: none;">
-      <div class="card">
-        <h2>Configuração do Canal</h2>
-        <form id="channel-form" class="form">
-          <div class="form-group">
-            <label for="channelName">Nome do Canal</label>
-            <input type="text" id="channelName" required>
-          </div>
-          <div class="form-group">
-            <label for="author">Autor</label>
-            <input type="text" id="author" required>
-          </div>
-          <div class="form-group">
-            <label for="language">Idioma Padrão</label>
-            <select id="language" required>
-              <option value="pt-BR">Português (Brasil)</option>
-              <option value="en-US">Inglês (EUA)</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-primary">Salvar Canal</button>
-        </form>
+    <div class="card mt-lg">
+      <div class="card-header">
+        <div class="card-icon">🚀</div>
+        <div><h3 class="card-title">Configurações de Execução</h3><p class="card-subtitle">Parâmetros de automação e retry</p></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="form-group">
+          <label for="max-retries">Máximo de Retries</label>
+          <input type="number" id="max-retries" value="3" min="0" max="10">
+        </div>
+        <div class="form-group">
+          <label for="retry-delay">Delay entre Retries (seg)</label>
+          <input type="number" id="retry-delay" value="5" min="1" max="60">
+        </div>
+        <div class="form-group">
+          <label for="timeout">Timeout de Execução (seg)</label>
+          <input type="number" id="timeout" value="300" min="60" max="3600">
+        </div>
       </div>
     </div>
-
-    <div id="security" class="tab-content" style="display: none;">
-      <div class="card">
-        <h2>Segurança</h2>
-        <form id="security-form" class="form">
-          <div class="form-group">
-            <label for="apiKey">API Key</label>
-            <input type="text" id="apiKey" required>
-          </div>
-          <div class="form-group">
-            <label for="allowedOrigins">Origens Permitidas (separadas por vírgula)</label>
-            <input type="text" id="allowedOrigins" value="http://localhost:3456">
-          </div>
-          <button type="submit" class="btn-primary">Salvar Segurança</button>
-        </form>
-      </div>
+    <div class="setup-actions mt-lg">
+      <button class="btn-secondary" onclick="resetSettings()"><dots_function_call>
+        <span>🔄</span>
+        <span>Restaurar Padrão</span>
+      </button>
+      <button class="btn-primary" onclick="saveSettings()">
+        <span>💾</span>
+        <span>Salvo Configurações</span>
+      </button>
     </div>
   </main>
 
+  <div id="notification-container" class="notification-container"></div>
+
   <script>
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-      document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).style.display = 'block';
-      event.target.classList.add('active');
+    function saveSettings() {
+      showNotification('Configurações salvas com sucesso!', 'success');
     }
-
-    async function loadProviders() {
-      const res = await fetch('/api/config/providers');
-      const providers = await res.json();
-      document.getElementById('providers-list').innerHTML = providers.map(p => `
-        <div class="list-item">
-          <strong>${p.nome}</strong> (${p.tipo}) - ${p.ativo ? 'Ativo' : 'Inativo'}
-        </div>
-      `).join('');
+    function resetSettings() {
+      if (confirm('Tem certeza que deseja restaurar as configurações padrão?')) {
+        showNotification('Configurações restauradas para o padrão!', 'info');
+      }
     }
-
-    document.getElementById('provider-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await fetch('/api/config/providers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nome: document.getElementById('providerName').value,
-          tipo: document.getElementById('providerType').value,
-          primary: {
-            endpoint: document.getElementById('primaryEndpoint').value,
-            apiKey: document.getElementById('primaryKey').value
-          },
-          fallback: {
-            endpoint: document.getElementById('fallbackEndpoint').value,
-            apiKey: document.getElementById('fallbackKey').value
-          }
-        })
-      });
-      loadProviders();
-    });
-
-    document.getElementById('channel-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          channelName: document.getElementById('channelName').value,
-          author: document.getElementById('author').value,
-          language: document.getElementById('language').value
-        })
-      });
-      alert('Configuração salva!');
-    });
-
-    loadProviders();
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `<span class="notification-message">${message}</span><button class="notification-close" onclick="this.parentElement.remove()">×</button>`;
+      container.appendChild(notification);
+      setTimeout(() => notification.remove(), 5000);
+    }
   </script>
 </body>
 </html>

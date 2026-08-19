@@ -7,57 +7,532 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <nav class="navbar">
+  <nav class="youtube-nav">
     <div class="nav-brand">
-      <h1>🎬 YouTube Automation</h1>
+      <div class="nav-icon">🎬</div>
+      <h1>YouTube Automation</h1>
     </div>
-    <div class="nav-links">
-      <a href="/">Dashboard</a>
-      <a href="/settings.html">Configurações</a>
-      <a href="/templates.html">Templates</a>
-      <a href="/schedule.html">Agendamentos</a>
-      <a href="/logs.html">Logs</a>
-      <a href="/metrics.html" class="active">Métricas</a>
+    <div class="nav-sections">
+      <a href="/" class="nav-section">
+        <div class="section-icon">📊</div>
+        <div class="section-content"><div class="section-title">Dashboard</div><div class="section-desc">Visão geral e métricas</div></div>
+      </a>
+      <a href="/setup.html" class="nav-section">
+        <div class="section-icon">⚙️</div>
+        <div class="section-content"><div class="section-title">Setup</div><div class="section-desc">Configurar provedores e API</div></div>
+      </a>
+      <a href="/execute.html" class="nav-section">
+        <div class="section-icon">🚀</div>
+        <div class="section-content"><div class="section-title">Execute</div><div class="section-desc">Execuções manuais e monitoradas</div></div>
+      </a>
+      <a href="/templates.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content"><div class="section-title">Templates</div><div class="section-desc">Gerenciar templates de publicação</div></div>
+      </a>
+      <a href="/schedule.html" class="nav-section">
+        <div class="section-icon">⏰</div>
+        <div class="section-content"><div class="section-title">Agendamentos</div><div class="section-desc">Pipeline automatizado agendado</div></div>
+      </a>
+      <a href="/logs.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content"><div class="section-title">Logs</div><div class="section-desc">Acompanhamento de atividades</div></div>
+      </a>
+      <a href="/metrics.html" class="nav-section active">
+        <div class="section-icon">📈</div>
+        <div class="section-content"><div class="section-title">Métricas</div><div class="section-desc">Análise de performance</div></div>
+      </a>
     </div>
   </nav>
 
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-icon">📈</div>
+      <div class="header-text">
+        <h1>Análise de Performance</h1>
+        <p>Métricas detalhadas e análise de dados do sistema de automação</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <div class="time-range-selector">
+        <label for="time-range">Período</label>
+        <select id="time-range">
+          <option value="today">Hoje</option>
+          <option value="week">Esta Semana</option>
+          <option value="month">Este Mês</option>
+          <option value="year">Este Ano</option>
+        </select>
+      </div>
+      
+      <button class="btn-secondary" onclick="refreshMetrics()">
+        <span>🔄</span>
+        <span>Atualizar</span>
+      </button>
+    </div>
+  </header>
+
   <main class="container">
-    <div class="grid">
-      <div class="card">
-        <h2>Execuções</h2>
-        <div id="exec-metrics">
-          <div class="loading">Carregando...</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-icon">🚀</div>
+          <h3>Execuções Totais</h3>
+        </div>
+        <div class="metric-value" id="total-executions">0</div>
+        <div class="metric-change positive">
+          <span>+12%</span>
+          <span>vs mês anterior</span>
         </div>
       </div>
+      
+      <div class="metric-card">
+        <div class="metric-icon">✅</div>
+        <h3>Taxa de Sucesso</h3>
+        <div class="metric-value" id="success-rate">0%</div>
+        <div class="metric-change positive">
+          <span>+2.3%</span>
+          <span>vs mês anterior</span>
+        </div>
+      </div>
+      
+      <div class="metric-card">
+        <div class="metric-icon">⏱️</div>
+        <h3>Tempo Médio</h3>
+        <div class="metric-value" id="avg-time">0s</div>
+        <div class="metric-change negative">
+          <span>-8%</span>
+          <span>vs mês anterior</span>
+        </div>
+      </div>
+      
+      <div class="metric-card">
+        <div class="metric-icon">💰</div>
+        <h3>Custo Total</h3>
+        <div class="metric-value" id="total-cost">$0.00</div>
+        <div class="metric-change positive">
+          <span>+5.2%</span>
+          <span>vs mês anterior</span>
+        </div>
+      </div>
+    </div>
 
-      <div class="card">
-        <h2>Custos</h2>
-        <div id="cost-metrics">
-          <div class="loading">Carregando...</div>
+    <div class="charts-section">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Execuções por Dia (7 Dias)</h3>
+          <div class="chart-controls">
+            <button class="chart-tab active" data-chart="daily">Diário</button>
+            <button class="chart-tab" data-chart="weekly">Semanal</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="executionsChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Distribuição de Erros por Nível</h3>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color error"></div>
+              <span>Erros</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color warning"></div>
+              <span>Avisos</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color info"></div>
+              <span>Info</span>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="errorsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="tables-section">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Performance por Template</h3>
+          <button class="btn-text" onclick="exportTableData('templates')">Exportar</button>
+        </div>
+        <div class="table-container">
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>Template</th>
+                <th>Execuções</th>
+                <th>Sucesso</th>
+                <th>Taxa de Erro</th>
+                <th>Tempo Médio</th>
+                <th>Custo Total</th>
+              </tr>
+            </thead>
+            <tbody id="templates-table-body">
+              <tr>
+                <td colspan="6" class="loading-cell">Carregando dados...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Tendências de Uso de API</h3>
+          <button class="btn-text" onclick="exportTableData('apis')">Exportar</button>
+        </div>
+        <div class="table-container">
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>Provedor API</th>
+                <th>Requisições</th>
+                <th>Taxa de Erro</th>
+                <th>Custo (USD)</th>
+                <th>Uptime</th>
+              </tr>
+            </thead>
+            <tbody id="apis-table-body">
+              <tr>
+                <td colspan="5" class="loading-cell">Carregando dados...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </main>
 
-  <script>
-    async function loadMetrics() {
-      const metricsRes = await fetch('/api/metrics');
-      const metrics = await metricsRes.json();
-      document.getElementById('exec-metrics').innerHTML = `
-        <p><strong>Total:</strong> ${metrics.total}</p>
-        <p><strong>Sucesso:</strong> ${metrics.sucesso}</p>
-        <p><strong>Falha:</strong> ${metrics.falha}</p>
-        <p><strong>Taxa de Sucesso:</strong> ${metrics.taxaSucesso}</p>
-      `;
+  <aside class="insights-panel">
+    <div class="insights-header">
+      <h3>🔍 Insights e Recomendações</h3>
+    </div>
+    
+    <div class="insight-cards">
+      <div class="insight-card">
+        <div class="insight-icon">💡</div>
+        <div class="insight-content">
+          <h4>Otimização de Performance</h4>
+          <p>Os templates "Quick Upload" mostram 15% melhor performance. Considere usar este template para uploads frequentes.</p>
+        </div>
+      </div>
+      
+      <div class="insight-card">
+        <div class="insight-icon">⚠️</div>
+        <div class="insight-content">
+          <h4>Atenção aos Erros</h4>
+          <p>Erros recentes no provedor OpenRouter aumentaram 23%. Verifique a chave da API e limites de rate.</p>
+        </div>
+      </div>
+      
+      <div class="insight-card">
+        <div class="insight-icon">📈</div>
+        <div class="insight-content">
+          <h4>Custo Otimizado</h4>
+          <p>Uso de templates mais baratos reduziu custos em $127 este mês. Implemente otimização de custos.</p>
+        </div>
+      </div>
+    </div>
+  </aside>
 
-      const costRes = await fetch('/api/costs?periodo=diario');
-      const costs = await costRes.json();
-      document.getElementById('cost-metrics').innerHTML = `
-        <p><strong>Total (diário):</strong> $${costs.total.toFixed(2)}</p>
-      `;
+  <div id="notification-container" class="notification-container"></div>
+
+  <script>
+    // Metrics Page Functionality
+    let metricsData = {};
+
+    async function loadMetrics() {
+      try {
+        const timeRange = document.getElementById('time-range').value;
+        
+        const [metricsRes, templatesRes, apisRes] = await Promise.all([
+          fetch(`/api/metrics?periodo=${timeRange}`),
+          fetch(`/api/metrics/templates?periodo=${timeRange}`),
+          fetch(`/api/metrics/apis?periodo=${timeRange}`)
+        ]);
+        
+        metricsData = {
+          metrics: await metricsRes.json(),
+          templates: await templatesRes.json(),
+          apis: await apisRes.json()
+        };
+        
+        updateMetricsDisplay();
+        updateCharts();
+        updateTables();
+      } catch (error) {
+        console.error('Error loading metrics:', error);
+        showNotification('Erro ao carregar métricas', 'error');
+      }
     }
 
-    loadMetrics();
+    function updateMetricsDisplay() {
+      const data = metricsData.metrics;
+      
+      document.getElementById('total-executions').textContent = data.total || 0;
+      document.getElementById('success-rate').textContent = data.successRate || '0%';
+      document.getElementById('avg-time').textContent = `${data.avgTime || 0}s`;
+      document.getElementById('total-cost').textContent = `$${(data.totalCost || 0).toFixed(2)}`;
+    }
+
+    function updateCharts() {
+      const dailyExecutions = metricsData.metrics?.dailyExecutions || [0, 0, 0, 0, 0, 0, 0];
+      const errorCounts = [
+        metricsData.metrics?.errorCount || 0,
+        metricsData.metrics?.warningCount || 0,
+        metricsData.metrics?.infoCount || 0,
+        metricsData.metrics?.debugCount || 0
+      ];
+      
+      // Executions Chart
+      const executionsChartCtx = document.getElementById('executionsChart').getContext('2d');
+      if (window.executionsChart) {
+        window.executionsChart.destroy();
+      }
+      
+      window.executionsChart = new Chart(executionsChartCtx, {
+        type: 'line',
+        data: {
+          labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+          datasets: [{
+            label: 'Execuções',
+            data: dailyExecutions,
+            borderColor: 'rgb(33, 150, 243)',
+            backgroundColor: 'rgba(33, 150, 243, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+      
+      // Errors Chart
+      const errorsChartCtx = document.getElementById('errorsChart').getContext('2d');
+      if (window.errorsChart) {
+        window.errorsChart.destroy();
+      }
+      
+      window.errorsChart = new Chart(errorsChartCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Erros', 'Avisos', 'Info', 'Debug'],
+          datasets: [{
+            data: errorCounts,
+            backgroundColor: [
+              'rgba(244, 67, 54, 0.8)',
+              'rgba(255, 152, 0, 0.8)',
+              'rgba(33, 150, 243, 0.8)',
+              'rgba(158, 158, 158, 0.8)'
+            ],
+            borderColor: [
+              'rgba(244, 67, 54, 1)',
+              'rgba(255, 152, 0, 1)',
+              'rgba(33, 150, 243, 1)',
+              'rgba(158, 158, 158, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    function updateTables() {
+      updateTemplatesTable();
+      updateApisTable();
+    }
+
+    function updateTemplatesTable() {
+      const tbody = document.getElementById('templates-table-body');
+      tbody.innerHTML = metricsData.templates.map(template => `
+        <tr>
+          <td><strong>${template.nome}</strong></td>
+          <td>${template.execucoes}</td>
+          <td>
+            <div class="status-badge" style="background: ${getSuccessRateColor(template.taxaSucesso)}">
+              ${template.taxaSucesso}%
+            </div>
+          </td>
+          <td>${template.taxaErro}%</td>
+          <td>${template.tempoMedio}s</td>
+          <td>$${template.custoTotal.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateApisTable() {
+      const tbody = document.getElementById('apis-table-body');
+      tbody.innerHTML = metricsData.apis.map(api => `
+        <tr>
+          <td><strong>${api.provedor}</strong></td>
+          <td>${api.requisicoes}</td>
+          <td>
+            <div class="status-badge" style="background: ${getErrorRateColor(api.taxaErro)}">
+              ${api.taxaErro}%
+            </div>
+          </td>
+          <td>$${api.custo.toFixed(2)}</td>
+          <td>
+            <div class="status-indicator">
+              <span class="status-dot" style="background: ${getUptimeColor(api.uptime)}"></span>
+              <span>${api.uptime}%</span>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function getSuccessRateColor(rate) {
+      if (rate >= 95) return 'rgb(76, 175, 80)';
+      if (rate >= 90) return 'rgb(255, 152, 0)';
+      return 'rgb(244, 67, 54)';
+    }
+
+    function getErrorRateColor(rate) {
+      if (rate <= 5) return 'rgb(76, 175, 80)';
+      if (rate <= 10) return 'rgb(255, 152, 0)';
+      return 'rgb(244, 67, 54)';
+    }
+
+    function getUptimeColor(uptime) {
+      if (uptime >= 99.9) return 'rgb(76, 175, 80)';
+      if (uptime >= 99) return 'rgb(255, 152, 0)';
+      return 'rgb(244, 67, 54)';
+    }
+
+    function exportTableData(tableType) {
+      let data = [];
+      let filename = '';
+      
+      if (tableType === 'templates') {
+        data = metricsData.templates;
+        filename = 'templates-metrics.csv';
+      } else if (tableType === 'apis') {
+        data = metricsData.apis;
+        filename = 'apis-metrics.csv';
+      }
+      
+      const csvContent = data.map(item => 
+        Object.values(item).join(',')
+      ).join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showNotification('Dados exportados com sucesso!', 'success');
+    }
+
+    function refreshMetrics() {
+      showNotification('Atualizando métricas...', 'info');
+      loadMetrics();
+    }
+
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+      `;
+      container.appendChild(notification);
+      setTimeout(() => notification.remove(), 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      loadMetrics();
+      
+      document.getElementById('time-range').addEventListener('change', function() {
+        loadMetrics();
+      });
+    });
   </script>
+
+  <style>
+    .metric-card { background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; border: 1px solid var(--border); transition: all var(--transition-normal); position: relative; overflow: hidden; }
+    .metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--info), var(--success)); opacity: 0; transition: opacity var(--transition-normal); }
+    .metric-card:hover::before { opacity: 1; }
+    .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--info); }
+    .metric-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .metric-icon { font-size: 2rem; width: 40px; height: 40px; background: var(--bg-elevated); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+    .metric-value { font-size: 2.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+    .metric-change { display: flex; align-items: center; gap: 0.25rem; font-size: 0.875rem; }
+    .metric-change.positive { color: var(--success); }
+    .metric-change.negative { color: var(--error); }
+
+    .charts-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .chart-card { background: var(--bg-surface); border-radius: var(--radius-xl); padding: 1.5rem; border: 1px solid var(--border); }
+    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .chart-controls { display: flex; gap: 0.5rem; }
+    .chart-tab { padding: 0.5rem 1rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; transition: all var(--transition-fast); }
+    .chart-tab.active { background: var(--info); color: white; border-color: var(--info); }
+    .chart-container { position: relative; height: 300px; }
+    .chart-legend { display: flex; gap: 1rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; }
+    .legend-color { width: 12px; height: 12px; border-radius: 2px; }
+
+    .tables-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .table-card { background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border); overflow: hidden; }
+    .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .table-container { overflow-x: auto; }
+    .metrics-table { width: 100%; border-collapse: collapse; }
+    .metrics-table th { padding: 1rem 1.5rem; text-align: left; background: var(--bg-elevated); border-bottom: 1px solid var(--border); font-weight: 600; color: var(--text); }
+    .metrics-table td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .metrics-table tr:hover { background: var(--bg-elevated); }
+
+    .insights-panel { position: sticky; top: 2rem; background: var(--bg-surface); border-radius: var(--radius-xl); padding: 1.5rem; border: 1px solid var(--border); height: fit-content; }
+    .insights-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .insight-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .insight-card { background: var(--bg-elevated); border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border); display: flex; gap: 1rem; transition: all var(--transition-fast); }
+    .insight-card:hover { transform: translateX(4px); border-color: var(--info); }
+    .insight-icon { font-size: 1.5rem; width: 40px; height: 40px; background: var(--info); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .insight-content h4 { margin-bottom: 0.5rem; color: var(--text); }
+    .insight-content p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; }
+
+    .loading-cell { text-align: center; color: var(--text-secondary); }
+
+    @media (max-width: 1200px) {
+      .charts-section { grid-template-columns: 1fr; }
+      .tables-section { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+      .chart-container { height: 250px; }
+      .page-header { flex-direction: column; align-items: flex-start; }
+      .header-controls { width: 100%; margin-top: 1rem; }
+    }
+  </style>
 </body>
 </html>

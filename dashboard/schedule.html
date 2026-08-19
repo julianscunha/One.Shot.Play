@@ -7,41 +7,464 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <nav class="navbar">
+  <nav class="youtube-nav">
     <div class="nav-brand">
-      <h1>🎬 YouTube Automation</h1>
+      <div class="nav-icon">🎬</div>
+      <h1>YouTube Automation</h1>
     </div>
-    <div class="nav-links">
-      <a href="/">Dashboard</a>
-      <a href="/settings.html">Configurações</a>
-      <a href="/templates.html">Templates</a>
-      <a href="/schedule.html" class="active">Agendamentos</a>
-      <a href="/logs.html">Logs</a>
-      <a href="/metrics.html">Métricas</a>
+    <div class="nav-sections">
+      <a href="/" class="nav-section">
+        <div class="section-icon">📊</div>
+        <div class="section-content"><div class="section-title">Dashboard</div><div class="section-desc">Visão geral e métricas</div></div>
+      </a>
+      <a href="/setup.html" class="nav-section">
+        <div class="section-icon">⚙️</div>
+        <div class="section-content"><div class="section-title">Setup</div><div class="section-desc">Configurar provedores e API</div></div>
+      </a>
+      <a href="/execute.html" class="nav-section">
+        <div class="section-icon">🚀</div>
+        <div class="section-content"><div class="section-title">Execute</div><div class="section-desc">Execuções manuais e monitoradas</div></div>
+      </a>
+      <a href="/templates.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content"><div class="section-title">Templates</div><div class="section-desc">Gerenciar templates de publicação</div></div>
+      </a>
+      <a href="/schedule.html" class="nav-section active">
+        <div class="section-icon">⏰</div>
+        <div class="section-content"><div class="section-title">Agendamentos</div><div class="section-desc">Pipeline automatizado agendado</div></div>
+      </a>
+      <a href="/logs.html" class="nav-section">
+        <div class="section-icon">📋</div>
+        <div class="section-content"><div class="section-title">Logs</div><div class="section-desc">Acompanhamento de atividades</div></div>
+      </a>
+      <a href="/metrics.html" class="nav-section">
+        <div class="section-icon">📈</div>
+        <div class="section-content"><div class="section-title">Métricas</div><div class="section-desc">Análise de performance</div></div>
+      </a>
     </div>
   </nav>
 
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-icon">⏰</div>
+      <div class="header-text">
+        <h1>Agendamentos</h1>
+        <p>Configure e gerencie execuções automatizadas agendadas do sistema</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary" onclick="showScheduleModal()">
+        <span>➕</span>
+        <span>Novo Agendamento</span>
+      </button>
+    </div>
+  </header>
+
   <main class="container">
-    <div class="card">
-      <h2>Agendamentos</h2>
-      <div id="schedule-list">
-        <div class="loading">Carregando agendamentos...</div>
+    <div class="stats-grid">
+      <div class="stat-card-large">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <div class="stat-value" id="total-schedules">0</div>
+          <div class="stat-label">Total de Agendamentos</div>
+        </div>
+      </div>
+      
+      <div class="stat-card-large">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-info">
+          <div class="stat-value" id="active-schedules">0</div>
+          <div class="stat-label">Ativos</div>
+        </div>
+      </div>
+      
+      <div class="stat-card-large">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-info">
+          <div class="stat-value" id="next-execution">--:--</div>
+          <div class="stat-label">Próxima Execução</div>
+        </div>
+      </div>
+      
+      <div class="stat-card-large">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <div class="stat-value" id="success-rate">0%</div>
+          <div class="stat-label">Taxa de Sucesso</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schedules-section">
+      <div class="section-header">
+        <h3>Agenda de Execuções</h3>
+        <div class="schedule-filters">
+          <select id="filter-status">
+            <option value="">Todos os Status</option>
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+            <option value="aguardando">Aguardando</option>
+          </select>
+          <select id="filter-template">
+            <option value="">Todos os Templates</option>
+            <option value="standard">Standard YouTube</option>
+            <option value="quick">Quick Upload</option>
+            <option value="detailed">Detailed YouTube</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="schedules-grid" id="schedules-grid">
+        <div class="schedule-card loading-state">
+          <div class="loading-icon">⏰</div>
+          <p>Carregando agendamentos...</p>
+        </div>
       </div>
     </div>
   </main>
 
+  <div id="schedule-modal" class="modal">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Novo Agendamento</h3>
+        <button class="modal-close" onclick="closeScheduleModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="schedule-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="schedule-name">Nome do Agendamento</label>
+              <input type="text" id="schedule-name" required placeholder="Ex: Weekly Upload">
+            </div>
+            
+            <div class="form-group">
+              <label for="schedule-template">Template</label>
+              <select id="schedule-template" required>
+                <option value="">Selecione um template</option>
+                <option value="standard">Standard YouTube</option>
+                <option value="quick">Quick Upload</option>
+                <option value="detailed">Detailed YouTube</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="schedule-frequency">Frequência</label>
+              <select id="schedule-frequency" required>
+                <option value="daily">Diário</option>
+                <option value="weekly">Semanal</option>
+                <option value="monthly">Mensal</option>
+                <option value="custom">Personalizado</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="schedule-time">Horário</label>
+              <input type="time" id="schedule-time" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="schedule-days">Dias da Semana</label>
+              <div class="days-selector">
+                <label class="day-checkbox">
+                  <input type="checkbox" value="monday"> Seg
+                </label>
+                <label class="day-checkbox">
+                  <input type="checkbox" value="tuesday"> Ter
+                </label>
+                <label class="day-checkbox">
+                  <input type="checkbox" value="wednesday"> Qua
+                </label>
+                <label class="day-checkbox">
+                  <input type="checkbox" value="thursday"> Qui
+                </label>
+                <label class="day-checkbox">
+                  <input type="checkbox" value="friday"> Sex
+                </label>
+                <label class="day-checkbox">
+                  <input type="checkbox" value="saturday"> Sáb
+                </label>
+                <label class="day-checkbox">
+                  <input type="checkbox" value="sunday"> Dom
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="schedule-timezone">Fuso Horário</label>
+              <select id="schedule-timezone">
+                <option value="UTC">UTC</option>
+                <option value="America/Sao_Paulo">São Paulo</option>
+                <option value="America/New_York">New York</option>
+                <option value="Europe/London">Londres</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="schedule-enabled">Status</label>
+              <select id="schedule-enabled">
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
+              </select>
+            </div>
+            
+            <div class="form-group full-width">
+              <label for="schedule-description">Descrição</label>
+              <textarea id="schedule-description" rows="3" placeholder="Descreva este agendamento..."></textarea>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="closeScheduleModal()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">
+              <span>💾</span>
+              <span>Salvar Agendamento</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification-container" class="notification-container"></div>
+
+  <style>
+    .page-header { background: var(--bg-gradient); padding: 3rem 2rem; margin-bottom: 2rem; border-radius: var(--radius-lg); margin: 2rem var(--spacing-xl) var(--spacing-lg); position: relative; overflow: hidden; }
+    .page-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), transparent); z-index: 1; }
+    .header-content { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; position: relative; z-index: 2; }
+    .header-actions { display: flex; gap: 1rem; position: relative; z-index: 2; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg); }
+    .schedule-filters { display: flex; gap: 1rem; }
+    .schedule-filters select { padding: 0.5rem 1rem; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); }
+    .schedules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
+    .schedule-card { background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 1.5rem; transition: all var(--transition-normal); position: relative; overflow: hidden; }
+    .schedule-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--info); }
+    .schedule-card.active { border-color: var(--success); background: rgba(76, 175, 80, 0.05); }
+    .schedule-card.inactive { opacity: 0.6; }
+    .schedule-card.waiting { border-color: var(--warning); background: rgba(255, 152, 0, 0.05); }
+    .schedule-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--spacing-md); }
+    .schedule-title { font-size: 1.25rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+    .schedule-meta { display: flex; gap: 0.5rem; margin-bottom: var(--spacing-md); }
+    .schedule-badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 500; }
+    .schedule-badge.active { background: rgba(76, 175, 80, 0.2); color: var(--success); border: 1px solid rgba(76, 175, 80, 0.4); }
+    .schedule-badge.inactive { background: rgba(158, 158, 158, 0.2); color: var(--text-muted); border: 1px solid rgba(158, 158, 158, 0.4); }
+    .schedule-badge.waiting { background: rgba(255, 152, 0, 0.2); color: var(--warning); border: 1px solid rgba(255, 152, 0, 0.4); }
+    .schedule-details { margin-bottom: var(--spacing-lg); }
+    .schedule-detail { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.875rem; }
+    .schedule-detail .icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+    .schedule-actions { display: flex; gap: 0.5rem; }
+    .schedule-action-btn { padding: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; justify-content: center; }
+    .schedule-action-btn:hover { background: var(--info); color: white; border-color: var(--info); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    .days-selector { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; }
+    .day-checkbox { display: flex; align-items: center; justify-content: center; padding: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast); font-size: 0.875rem; font-weight: 500; }
+    .day-checkbox input[type="checkbox"] { display: none; }
+    .day-checkbox:has(input:checked) { background: var(--info); color: white; border-color: var(--info); }
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 2000; align-items: center; justify-content: center; }
+    .modal.show { display: flex; }
+    .modal.large-modal { align-items: flex-start; padding-top: 5rem; }
+    .modal-content { background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; border-radius: var(--radius-sm); }
+    .modal-close:hover { background: var(--bg-elevated); color: var(--text); }
+    .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .days-selector { grid-template-columns: repeat(3, 1fr); }
+      .modal.large-modal { padding-top: 2rem; }
+      .modal-content { padding: 1rem; }
+    }
+  </style>
+
   <script>
+    let schedulesData = [];
+
     async function loadSchedules() {
-      const res = await fetch('/api/schedules');
-      const schedules = await res.json();
-      document.getElementById('schedule-list').innerHTML = schedules.map(s => `
-        <div class="list-item">
-          <strong>${s.nome}</strong> - ${s.frequencia} - ${s.horario}
+      try {
+        const status = document.getElementById('filter-status').value;
+        const template = document.getElementById('filter-template').value;
+        
+        let url = '/api/schedules';
+        const params = new URLSearchParams();
+        if (status) params.append('status', status);
+        if (template) params.append('template', template);
+        
+        const response = await fetch(`/api/schedules?${params}`);
+        schedulesData = await response.json();
+        
+        updateScheduleStats();
+        displaySchedules(schedulesData);
+      } catch (error) {
+        console.error('Error loading schedules:', error);
+        showNotification('Erro ao carregar agendamentos', 'error');
+      }
+    }
+
+    function updateScheduleStats() {
+      const total = schedulesData.length;
+      const active = schedulesData.filter(s => s.ativo).length;
+      const nextExecution = schedulesData
+        .filter(s => s.ativo)
+        .sort((a, b) => new Date(a.proximo) - new Date(b.proximo))[0];
+      
+      document.getElementById('total-schedules').textContent = total;
+      document.getElementById('active-schedules').textContent = active;
+      document.getElementById('next-execution').textContent = 
+        nextExecution ? new Date(nextExecution.proximo).toLocaleTimeString() : '--:--';
+      
+      const successRate = schedulesData.length > 0 
+        ? (schedulesData.filter(s => s.ultimaExecucao === 'concluido').length / schedulesData.length * 100).toFixed(0) + '%'
+        : '0%';
+      document.getElementById('success-rate').textContent = successRate;
+    }
+
+    function displaySchedules(schedules) {
+      const schedulesGrid = document.getElementById('schedules-grid');
+      
+      if (schedules.length === 0) {
+        schedulesGrid.innerHTML = `
+          <div class="schedule-card loading-state">
+            <div class="loading-icon">📅</div>
+            <p>Nenhum agendamento encontrado com os filtros aplicados</p>
+          </div>
+        `;
+        return;
+      }
+      
+      schedulesGrid.innerHTML = schedules.map(schedule => `
+        <div class="schedule-card ${schedule.ativo ? 'active' : 'inactive'} ${schedule.status}">
+          <div class="schedule-card-header">
+            <h3 class="schedule-title">${schedule.nome}</h3>
+            <div class="schedule-status">
+              <span class="schedule-badge ${schedule.ativo ? 'active' : 'inactive'}">
+                ${schedule.ativo ? '● Ativo' : '○ Inativo'}
+              </span>
+              <span class="schedule-badge ${schedule.status}">
+                ${schedule.status}
+              </span>
+            </div>
+          </div>
+          
+          <div class="schedule-card-body">
+            <div class="schedule-detail">
+              <span class="icon">📋</span>
+              <span>Template: <strong>${schedule.template}</strong></span>
+            </div>
+            <div class="schedule-detail">
+              <span class="icon">🔄</span>
+              <span>Frequência: <strong>${schedule.frequencia}</strong></span>
+            </div>
+            <div class="schedule-detail">
+              <span class="icon">⏰</span>
+              <span>Próximo: <strong>${new Date(schedule.proximo).toLocaleString()}</strong></span>
+            </div>
+            <div class="schedule-detail">
+              <span class="icon">✅</span>
+              <span>Última execução: <strong>${schedule.ultimaExecucao || 'Nunca'}</strong></span>
+            </div>
+            <div class="schedule-detail">
+              <span class="icon">💰</span>
+              <span>Custo: <strong>$${schedule.custo || '0.00'}</strong></span>
+            </div>
+          </div>
+          
+          <div class="schedule-actions">
+            <button class="schedule-action-btn" onclick="editSchedule('${schedule._id}')">
+              <span>✏️</span>
+            </button>
+            <button class="schedule-action-btn" onclick="toggleScheduleStatus('${schedule._id}', ${!schedule.ativo})">
+              <span>${schedule.ativo ? '⏸️' : '▶️'}</span>
+            </button>
+            <button class="schedule-action-btn" onclick="deleteSchedule('${schedule._id}')">
+              <span>🗑️</span>
+            </button>
+          </div>
         </div>
       `).join('');
     }
 
-    loadSchedules();
+    function showScheduleModal() {
+      const modal = document.getElementById('schedule-modal');
+      const title = document.getElementById('modal-title');
+      title.textContent = 'Novo Agendamento';
+      modal.classList.add('show');
+    }
+
+    function closeScheduleModal() {
+      document.getElementById('schedule-modal').classList.remove('show');
+    }
+
+    function editSchedule(scheduleId) {
+      console.log('Editar agendamento:', scheduleId);
+    }
+
+    function toggleScheduleStatus(scheduleId, enabled) {
+      console.log('Toggle schedule status:', scheduleId, enabled);
+    }
+
+    function deleteSchedule(scheduleId) {
+      if (confirm('Tem certeza que deseja excluir este agendamento?')) {
+        console.log('Excluir agendamento:', scheduleId);
+      }
+    }
+
+    document.getElementById('schedule-form')?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        nome: document.getElementById('schedule-name').value,
+        template: document.getElementById('schedule-template').value,
+        frequencia: document.getElementById('schedule-frequency').value,
+        horario: document.getElementById('schedule-time').value,
+        dias: Array.from(document.querySelectorAll('.day-checkbox input:checked')).map(cb => cb.value),
+        timezone: document.getElementById('schedule-timezone').value,
+        enabled: document.getElementById('schedule-enabled').value === 'true',
+        descricao: document.getElementById('schedule-description').value
+      };
+      
+      try {
+        const response = await fetch('/api/schedules', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          closeScheduleModal();
+          loadSchedules();
+          showNotification('Agendamento criado com sucesso!', 'success');
+        } else {
+          showNotification(`Erro: ${result.error}`, 'error');
+        }
+      } catch (error) {
+        console.error('Error creating schedule:', error);
+        showNotification('Erro ao criar agendamento', 'error');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSchedules();
+      
+      setInterval(loadSchedules, 30000);
+    });
+
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+      `;
+      container.appendChild(notification);
+      setTimeout(() => notification.remove(), 5000);
+    }
   </script>
 </body>
 </html>

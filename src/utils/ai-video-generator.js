@@ -4,12 +4,12 @@ const fs = require('fs').promises;
 const path = require('path');
 const { pathToFileURL } = require('url');
 const axios = require('axios');
-const { Logger } = require('./logger');
+const { createLogger } = require('./logger');
 const { runFFmpeg, checkFFmpeg, ffmpegInstallHint } = require('./ffmpeg');
 
 class AIVideoGenerator {
   constructor(credentials = {}) {
-    this.logger = new Logger('AIVideoGenerator');
+    this.logger = createLogger('AIVideoGenerator');
 
     // ============================================================
     // OpenRouter

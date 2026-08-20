@@ -1,8 +1,16 @@
+const path = require('path');
+const fs = require('fs').promises;
 const { ERROR_TYPES, classifyError } = require('../../utils/errors');
+const { AIVideoGenerator } = require('../../utils/ai-video-generator');
 
 class PipelineEngine {
   constructor(configService) {
     this.configService = configService;
+    // ponytail: credentials come from env vars via AIVideoGenerator's own fallback
+    // (process.env.OPENROUTER_API_KEY etc). ConfigService.saveConfig() corrupts
+    // object-valued settings (String(value) -> "[object Object]"), so DB-stored
+    // provider credentials aren't usable yet - fix that first if wiring dashboard config.
+    this.aiGenerator = new AIVideoGenerator({});
     this.fases = [
       { nome: 'estrategia', acao: 'gerarEstrategia' },
       { nome: 'script', acao: 'gerarScript' },
@@ -92,10 +100,7 @@ class PipelineEngine {
       execution: executionId
     });
 
-    // ponytail: placeholder - no real generation wired yet (AIVideoGenerator/YouTube
-    // upload aren't connected here), so this just marks the phase done. Replace when
-    // real generation lands; drop mapearTipoProvider() then too if still unused.
-    const resultado = { resultado: 'ok' };
+    const resultado = await this[fase.acao](executionId, template);
 
     await this.configService.addLog({
       nivel: 'info',
@@ -107,17 +112,73 @@ class PipelineEngine {
     return resultado;
   }
 
-  mapearTipoProvider(faseNome) {
-    const mapa = {
-      estrategia: 'ai',
-      script: 'ai',
-      audio: 'tts',
-      imagens: 'image',
-      video: 'video',
-      legenda: 'tts',
-      upload: null
-    };
-    return mapa[faseNome];
+  // Working files for one execution's audio/images/video live here.
+  workDir(executionId) {
+    return path.join(__dirname, '..', '..', 'data', 'executions', executionId);
+  }
+
+  async mergeAssets(executionId, patch) {
+    const execution = await this.configService.getExecution(executionId);
+    const assets = { ...(execution?.assets || {}), ...patch };
+    await this.configService.updateExecution(executionId, { assets });
+    return assets;
+  }
+
+  // ponytail: no LLM strategy/script writer yet - the template's own text stands in
+  // as the script until that's built. Replace gerarEstrategia/gerarScript with real
+  // OpenRouter calls when that lands; gerarAudio/gerarImagens/montarVideo already
+  // read `assets.script`, so nothing downstream needs to change.
+  async gerarEstrategia(executionId, template) {
+    return this.mergeAssets(executionId, {
+      estrategia: template?.descricao || template?.nome || 'Estratégia padrão'
+    });
+  }
+
+  async gerarScript(executionId, template) {
+    return this.mergeAssets(executionId, {
+      script: {
+        title: template?.nome || 'Vídeo',
+        mainContent: { sections: [] },
+        hook: { text: template?.descricao || template?.nome || '' }
+      }
+    });
+  }
+
+  async gerarAudio(executionId) {
+    const execution = await this.configService.getExecution(executionId);
+    const script = execution.assets?.script;
+    const text = script?.hook?.text || script?.title || 'Conteúdo gerado automaticamente.';
+    await fs.mkdir(this.workDir(executionId), { recursive: true });
+    const audioPath = path.join(this.workDir(executionId), 'audio.mp3');
+    await this.aiGenerator.generateTTSAudio(text, audioPath);
+    return this.mergeAssets(executionId, { audioPath });
+  }
+
+  async gerarImagens(executionId) {
+    const execution = await this.configService.getExecution(executionId);
+    const prompt = execution.assets?.script?.title || 'video thumbnail';
+    const imagePaths = await this.aiGenerator.generateVisualAssets(prompt, 'cinematic', 3);
+    return this.mergeAssets(executionId, { imagePaths });
+  }
+
+  async montarVideo(executionId) {
+    const execution = await this.configService.getExecution(executionId);
+    const { script, audioPath, imagePaths } = execution.assets || {};
+    const videoPath = path.join(this.workDir(executionId), 'video.mp4');
+    await this.aiGenerator.generateVideo(script || {}, imagePaths || [], audioPath, videoPath);
+    return this.mergeAssets(executionId, { videoPath });
+  }
+
+  // ponytail: no captioning implementation exists in the codebase yet - stub until
+  // one is built.
+  async adicionarLegenda(executionId) {
+    return this.mergeAssets(executionId, { legenda: 'skipped (no captioning implementation yet)' });
+  }
+
+  // ponytail: src/services/youtube/ is empty - no uploader exists yet. Stub until
+  // one is built.
+  async publicarYouTube(executionId) {
+    return this.mergeAssets(executionId, { upload: 'skipped (no YouTube uploader implementation yet)' });
   }
 
   delay(ms) {

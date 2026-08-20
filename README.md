@@ -6,8 +6,8 @@ Sistema profissional de automação de YouTube com multi-provider, templates, pi
 
 ### Pré-requisitos
 - Node.js >= 20
-- MongoDB (ou Back4App)
-- Contas: OpenRouter, Telegram, YouTube
+- ffmpeg (instalado automaticamente via `ffmpeg-static` no `npm install`, ou defina `FFMPEG_PATH`)
+- Contas: OpenRouter, Telegram, YouTube (opcional - sem chaves configuradas, o pipeline roda em modo simulado)
 
 ### Instalação
 
@@ -25,16 +25,16 @@ Acesse: `http://localhost:3456`
 ```
 src/
 ├── config/          # Configurações e templates
-├── db/              # Modelos MongoDB
+├── db/              # SQLite (driver sqlite3, schema em db.js)
 ├── middleware/      # Auth, validation, rate limit
 ├── routes/          # Rotas da API
 ├── services/        # Lógica de negócio
-│   ├── ai/          # Provedores de IA
-│   ├── media/       # Narração, música, legendas
-│   ├── pipeline/    # Engine de execução
+│   ├── media/       # Otimização de imagem/vídeo
+│   ├── pipeline/    # Engine de execução (7 fases)
 │   ├── telegram/    # Bot do Telegram
-│   └── verification/# Pré/pós verificação
-├── utils/           # Utilitários
+│   ├── verification/# Pré/pós verificação
+│   └── youtube/     # Upload via OAuth
+├── utils/           # AIVideoGenerator (TTS/imagem/vídeo), captions, credenciais, ffmpeg
 └── workers/         # Agendador, publisher
 ```
 

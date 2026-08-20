@@ -117,11 +117,13 @@
   <script>
     let selectedTemplate = null;
     let executionsData = [];
+    let templatesData = [];
 
     async function loadTemplates() {
       try {
         const response = await fetch('/api/templates');
         const templates = await response.json();
+        templatesData = templates;
         displayTemplates(templates);
       } catch (error) {
         console.error('Erro ao carregar templates:', error);
@@ -229,10 +231,11 @@
         return;
       }
       try {
+        const template = templatesData.find(t => (t._id || t.id) === templateId);
         const response = await fetch('/api/execute', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ template: templateId, tipo: 'manual' })
+          body: JSON.stringify({ template_id: templateId, template: template?.nome, tipo: 'manual' })
         });
         const result = await response.json();
         if (result.success) {

@@ -187,7 +187,7 @@
             return `
               <div class="log-item" onclick="showLogDetail('${encodeURIComponent(JSON.stringify(log))}')">
                 <span class="status-badge ${statusClass}">${log.nivel}</span>
-                <span class="log-timestamp">${new Date(log.timestamp).toLocaleString('pt-BR')}</span>
+                <span class="log-timestamp">${new Date(log.createdAt).toLocaleString('pt-BR')}</span>
                 <span class="text-tertiary">[${log.servico}]</span>
                 <span class="log-message">${log.mensagem}</span>
               </div>
@@ -202,7 +202,7 @@
         <div class="log-detail-item">
           <div class="detail-row"><span class="text-secondary">Nível:</span> <strong>${log.nivel.toUpperCase()}</strong></div>
           <div class="detail-row"><span class="text-secondary">Serviço:</span> <strong>${log.servico}</strong></div>
-          <div class="detail-row"><span class="text-secondary">Timestamp:</span> <strong>${new Date(log.timestamp).toLocaleString('pt-BR')}</strong></div>
+          <div class="detail-row"><span class="text-secondary">Timestamp:</span> <strong>${new Date(log.createdAt).toLocaleString('pt-BR')}</strong></div>
           <div class="detail-row"><span class="text-secondary">Mensagem:</span></div>
           <pre class="log-detail-message">${log.mensagem}</pre>
         </div>

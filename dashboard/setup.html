@@ -270,7 +270,7 @@
             tipo: provider === 'openrouter' ? 'llm' : provider === 'youtube' ? 'api' : 'notification',
             api_key: data.key,
             endpoint: provider === 'openrouter' ? 'https://openrouter.ai/api' : provider === 'youtube' ? 'https://youtube.googleapis.com' : 'https://api.telegram.org',
-            config: JSON.stringify(data)
+            config: data
           })
         });
 

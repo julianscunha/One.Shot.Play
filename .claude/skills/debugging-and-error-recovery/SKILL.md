@@ -298,3 +298,7 @@ After fixing a bug:
 - [ ] All existing tests pass
 - [ ] Build succeeds
 - [ ] The original bug scenario is verified end-to-end
+
+## References
+
+- [Debugging Frontend-Backend Disconnect](references/debugging-frontend-backend-disconnect.md) — Real-world case: missing .env + stub endpoints causing "nothing works" symptoms

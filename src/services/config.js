@@ -160,55 +160,57 @@ class ConfigService {
       [limit]
     );
     return rows.map(r => ({
-      id: r.id,
-      template_id: r.template_id,
-      template: r.template || r.template_id || '—',
-      status: STATUS_MAP[r.status] || r.status,
-      statusRaw: r.status,
-      assets: r.assets ? JSON.parse(r.assets) : {},
-      timeline: r.timeline ? JSON.parse(r.timeline) : {},
-      scheduledPublishTime: r.scheduled_publish_time,
-      priority: r.priority,
-      timestamp: r.created_at
-    }));
+          id: r.id,
+          _id: r.id,
+          template_id: r.template_id,
+          template: r.template || r.template_id || '—',
+          status: STATUS_MAP[r.status] || r.status,
+          statusRaw: r.status,
+          assets: r.assets ? JSON.parse(r.assets) : {},
+          timeline: r.timeline ? JSON.parse(r.timeline) : {},
+          scheduledPublishTime: r.scheduled_publish_time,
+          priority: r.priority,
+          timestamp: r.created_at
+        }));
   }
 
   async getExecution(id) {
-    const db = await this._getDb();
-    const row = await db.getRow(
-      'SELECT id, template_id, nome as template, status, assets, timeline, scheduled_publish_time, priority, created_at FROM productions WHERE id = ?',
-      [id]
-    );
-    if (!row) return null;
-    return {
-      id: row.id,
-      template_id: row.template_id,
-      template: row.template || row.template_id || '—',
-      status: STATUS_MAP[row.status] || row.status,
-      statusRaw: row.status,
-      assets: row.assets ? JSON.parse(row.assets) : {},
-      timeline: row.timeline ? JSON.parse(row.timeline) : {},
-      scheduledPublishTime: row.scheduled_publish_time,
-      priority: row.priority,
-      timestamp: row.created_at
-    };
-  }
+      const db = await this._getDb();
+      const row = await db.getRow(
+        'SELECT id, template_id, nome as template, status, assets, timeline, scheduled_publish_time, priority, created_at FROM productions WHERE id = ?',
+        [id]
+      );
+      if (!row) return null;
+      return {
+        id: row.id,
+        _id: row.id,
+        template_id: row.template_id,
+        template: row.template || row.template_id || '—',
+        status: STATUS_MAP[row.status] || row.status,
+        statusRaw: row.status,
+        assets: row.assets ? JSON.parse(row.assets) : {},
+        timeline: row.timeline ? JSON.parse(row.timeline) : {},
+        scheduledPublishTime: row.scheduled_publish_time,
+        priority: row.priority,
+        timestamp: row.created_at
+      };
+    }
 
   async createExecution(data) {
-    const db = await this._getDb();
-    const id = db.generateId('exec_');
-    const now = new Date().toISOString();
-    const assets = data.assets ? JSON.stringify(data.assets) : JSON.stringify({});
-    const timeline = data.timeline ? JSON.stringify(data.timeline) : JSON.stringify({});
-    const nome = data.template || data.nome || 'Execução';
+      const db = await this._getDb();
+      const id = db.generateId('exec_');
+      const now = new Date().toISOString();
+      const assets = data.assets ? JSON.stringify(data.assets) : JSON.stringify({});
+      const timeline = data.timeline ? JSON.stringify(data.timeline) : JSON.stringify({});
+      const nome = data.template || data.nome || 'Execução';
 
-    await db.execute(
-      'INSERT INTO productions (id, status, assets, timeline, scheduled_publish_time, priority, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [id, 'processing', assets, timeline, data.scheduledPublishTime || null, data.priority || 50, now]
-    );
+      await db.execute(
+        'INSERT INTO productions (id, status, assets, timeline, scheduled_publish_time, priority, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [id, 'processing', assets, timeline, data.scheduledPublishTime || null, data.priority || 50, now]
+      );
 
-    return { id, template: nome, status: 'running', timestamp: now };
-  }
+      return { id, _id: id, template: nome, status: 'running', timestamp: now };
+    }
 
   async cancelExecution(id) {
     const db = await this._getDb();

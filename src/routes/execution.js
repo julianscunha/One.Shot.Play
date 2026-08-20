@@ -25,6 +25,15 @@ router.get('/executions/:id', auth, async (req, res) => {
   }
 });
 
+router.post('/execute', auth, rateLimit.publish, async (req, res) => {
+  try {
+    const execution = await configService.startExecution(req.body);
+    res.json({ success: true, execution });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.post('/executions', auth, rateLimit.publish, async (req, res) => {
   try {
     const execution = await configService.createExecution(req.body);

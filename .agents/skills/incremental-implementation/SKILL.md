@@ -247,3 +247,7 @@ After completing all increments for a task:
 ## See Also
 
 Per-increment verification is the local check. Before declaring a task done, apply the project-wide Definition of Done as the final gate, the standing bar every increment clears regardless of the task. See `../../references/definition-of-done.md`.
+
+## References
+
+- [Handling Stub/Placeholder Endpoints](references/stub-endpoints.md) — How to detect and incrementally replace stub endpoints with real implementations

@@ -115,6 +115,7 @@
 
   <script>
     async function loadDashboardData() {
+      await loadApiKey();
       try {
         const [execRes, metricsRes] = await Promise.all([
           fetch('/api/executions'),

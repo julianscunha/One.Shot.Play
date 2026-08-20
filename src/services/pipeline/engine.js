@@ -124,24 +124,20 @@ class PipelineEngine {
     return assets;
   }
 
-  // ponytail: no LLM strategy/script writer yet - the template's own text stands in
-  // as the script until that's built. Replace gerarEstrategia/gerarScript with real
-  // OpenRouter calls when that lands; gerarAudio/gerarImagens/montarVideo already
-  // read `assets.script`, so nothing downstream needs to change.
+  // ponytail: no strategy step beyond picking the topic yet - the template's own
+  // text is the topic. gerarScript calls the real LLM (AIVideoGenerator.generateScript,
+  // OpenRouter-backed with a simulate fallback when no key is configured).
   async gerarEstrategia(executionId, template) {
     return this.mergeAssets(executionId, {
       estrategia: template?.descricao || template?.nome || 'Estratégia padrão'
     });
   }
 
-  async gerarScript(executionId, template) {
-    return this.mergeAssets(executionId, {
-      script: {
-        title: template?.nome || 'Vídeo',
-        mainContent: { sections: [] },
-        hook: { text: template?.descricao || template?.nome || '' }
-      }
-    });
+  async gerarScript(executionId) {
+    const execution = await this.configService.getExecution(executionId);
+    const topic = execution.assets?.estrategia || 'Vídeo';
+    const script = await this.aiGenerator.generateScript(topic);
+    return this.mergeAssets(executionId, { script });
   }
 
   async gerarAudio(executionId) {

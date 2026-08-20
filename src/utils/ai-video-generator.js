@@ -37,6 +37,11 @@ class AIVideoGenerator {
       process.env.OPENROUTER_TTS_VOICE ||
       'Kore';
 
+    this.openRouterTextModel =
+      credentials.openrouter?.textModel ||
+      process.env.OPENROUTER_TEXT_MODEL ||
+      'openai/gpt-4o-mini';
+
     if (this.openRouterApiKey) {
       this.openrouter = new OpenAI({
         apiKey: this.openRouterApiKey,
@@ -138,6 +143,79 @@ class AIVideoGenerator {
     this.azureSpeechRegion =
       credentials.azure?.speechRegion ||
       process.env.AZURE_SPEECH_REGION;
+  }
+
+  // ============================================================
+  // SCRIPT WRITING
+  // ============================================================
+
+  async generateScript(topic) {
+    this.logger.info(`Generating script for: ${topic}`);
+
+    const client = this.openrouter || this.openai;
+
+    if (!client) {
+      return this.simulateScriptGeneration(topic);
+    }
+
+    try {
+      const model = this.openrouter ? this.openRouterTextModel : 'gpt-4o-mini';
+
+      const response = await client.chat.completions.create({
+        model,
+        messages: [
+          {
+            role: 'user',
+            content: `Write a short YouTube video script about: "${topic}".
+Return ONLY valid JSON (no markdown fences, no commentary) matching exactly this shape:
+{
+  "title": string,
+  "hook": { "text": string },
+  "introduction": { "greeting": string, "topicIntro": string },
+  "mainContent": { "sections": [ { "title": string, "content": string } ] },
+  "conclusion": { "finalThought": string }
+}
+3 to 5 sections, each "content" 2-3 sentences.`
+          }
+        ],
+        temperature: 0.8
+      });
+
+      const raw = response.choices?.[0]?.message?.content;
+      if (!raw) {
+        throw new Error('Script generation returned no content');
+      }
+
+      const script = JSON.parse(this.stripJsonFences(raw));
+      this.logger.info('Script generation complete');
+      return script;
+    } catch (error) {
+      this.logger.error(`Script generation failed: ${error.message}`);
+      return this.simulateScriptGeneration(topic);
+    }
+  }
+
+  stripJsonFences(text) {
+    return text.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
+  }
+
+  simulateScriptGeneration(topic) {
+    this.logger.info('Simulating script generation...');
+
+    return {
+      title: topic,
+      hook: { text: `Descubra tudo sobre ${topic}!` },
+      introduction: {
+        greeting: 'Olá!',
+        topicIntro: `Hoje vamos falar sobre ${topic}.`
+      },
+      mainContent: {
+        sections: [
+          { title: 'Visão geral', content: `Conteúdo simulado sobre ${topic}.` }
+        ]
+      },
+      conclusion: { finalThought: 'Obrigado por assistir!' }
+    };
   }
 
   // ============================================================

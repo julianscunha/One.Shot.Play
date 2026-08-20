@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const { ERROR_TYPES, classifyError } = require('../../utils/errors');
 const { AIVideoGenerator } = require('../../utils/ai-video-generator');
 const { uploadVideo } = require('../youtube/uploader');
+const { addCaptionsToVideo } = require('../../utils/captions');
 
 class PipelineEngine {
   constructor(configService) {
@@ -164,10 +165,20 @@ class PipelineEngine {
     return this.mergeAssets(executionId, { videoPath });
   }
 
-  // ponytail: no captioning implementation exists in the codebase yet - stub until
-  // one is built.
   async adicionarLegenda(executionId) {
-    return this.mergeAssets(executionId, { legenda: 'skipped (no captioning implementation yet)' });
+    const execution = await this.configService.getExecution(executionId);
+    const { script, videoPath } = execution.assets || {};
+
+    const hasRealVideo = videoPath && await fs.access(videoPath).then(() => true, () => false);
+    if (!hasRealVideo) {
+      // upstream video phase simulated (no provider configured) - nothing to caption
+      return this.mergeAssets(executionId, { legenda: 'skipped (no real video to caption)' });
+    }
+
+    const captionedPath = videoPath.replace(/\.mp4$/i, '_captioned.mp4');
+    await addCaptionsToVideo(videoPath, script || {}, captionedPath);
+    // downstream (upload) reads assets.videoPath, so point it at the captioned file
+    return this.mergeAssets(executionId, { videoPath: captionedPath, legenda: 'concluido' });
   }
 
   async publicarYouTube(executionId) {

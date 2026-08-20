@@ -1,12 +1,12 @@
 const { PipelineEngine } = require('./engine');
-const { ConfigService } = require('../services/config');
-const { Logger } = require('../utils/logger');
+const { ConfigService } = require('../config');
+const { createLogger } = require('../../utils/logger');
 
 class PipelineWorker {
   constructor() {
     this.configService = new ConfigService();
     this.pipelineEngine = new PipelineEngine(this.configService);
-    this.logger = new Logger('PipelineWorker');
+    this.logger = createLogger('PipelineWorker');
     this.executando = false;
   }
 

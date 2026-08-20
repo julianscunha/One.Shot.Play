@@ -153,25 +153,41 @@ class ConfigService {
   }
 
   // ==================== Executions (from productions table) ====================
+  // Pipeline state (fases/progresso/faseAtual/erro) rides inside the `timeline`
+  // JSON column - there's no separate column for it and nothing else reads
+  // `timeline` for its own meaning, so this avoids a schema migration.
+  static _parsePipelineState(timelineRaw) {
+    const parsed = timelineRaw ? JSON.parse(timelineRaw) : {};
+    const { fases = [], progresso = 0, faseAtual = null, erro = null, ...timeline } = parsed;
+    return { fases, progresso, faseAtual, erro, timeline };
+  }
+
   async listExecutions(limit = 50) {
     const db = await this._getDb();
     const rows = await db.getRows(
       'SELECT id, template_id, nome as template, status, assets, timeline, scheduled_publish_time, priority, created_at FROM productions ORDER BY created_at DESC LIMIT ?',
       [limit]
     );
-    return rows.map(r => ({
-          id: r.id,
-          _id: r.id,
-          template_id: r.template_id,
-          template: r.template || r.template_id || '—',
-          status: STATUS_MAP[r.status] || r.status,
-          statusRaw: r.status,
-          assets: r.assets ? JSON.parse(r.assets) : {},
-          timeline: r.timeline ? JSON.parse(r.timeline) : {},
-          scheduledPublishTime: r.scheduled_publish_time,
-          priority: r.priority,
-          timestamp: r.created_at
-        }));
+    return rows.map(r => {
+      const { fases, progresso, faseAtual, erro, timeline } = ConfigService._parsePipelineState(r.timeline);
+      return {
+        id: r.id,
+        _id: r.id,
+        template_id: r.template_id,
+        template: r.template || r.template_id || '—',
+        status: STATUS_MAP[r.status] || r.status,
+        statusRaw: r.status,
+        assets: r.assets ? JSON.parse(r.assets) : {},
+        timeline,
+        fases,
+        progresso,
+        faseAtual,
+        erro,
+        scheduledPublishTime: r.scheduled_publish_time,
+        priority: r.priority,
+        timestamp: r.created_at
+      };
+    });
   }
 
   async getExecution(id) {
@@ -181,6 +197,7 @@ class ConfigService {
         [id]
       );
       if (!row) return null;
+      const { fases, progresso, faseAtual, erro, timeline } = ConfigService._parsePipelineState(row.timeline);
       return {
         id: row.id,
         _id: row.id,
@@ -189,7 +206,11 @@ class ConfigService {
         status: STATUS_MAP[row.status] || row.status,
         statusRaw: row.status,
         assets: row.assets ? JSON.parse(row.assets) : {},
-        timeline: row.timeline ? JSON.parse(row.timeline) : {},
+        timeline,
+        fases,
+        progresso,
+        faseAtual,
+        erro,
         scheduledPublishTime: row.scheduled_publish_time,
         priority: row.priority,
         timestamp: row.created_at
@@ -203,13 +224,14 @@ class ConfigService {
       const assets = data.assets ? JSON.stringify(data.assets) : JSON.stringify({});
       const timeline = data.timeline ? JSON.stringify(data.timeline) : JSON.stringify({});
       const nome = data.template || data.nome || 'Execução';
+      const templateId = data.template_id || data.templateId || null;
 
       await db.execute(
-        'INSERT INTO productions (id, status, assets, timeline, scheduled_publish_time, priority, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [id, 'processing', assets, timeline, data.scheduledPublishTime || null, data.priority || 50, now]
+        'INSERT INTO productions (id, template_id, nome, status, assets, timeline, scheduled_publish_time, priority, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [id, templateId, nome, 'processing', assets, timeline, data.scheduledPublishTime || null, data.priority || 50, now]
       );
 
-      return { id, _id: id, template: nome, status: 'running', timestamp: now };
+      return { id, _id: id, template_id: templateId, template: nome, status: 'running', timestamp: now };
     }
 
   async cancelExecution(id) {
@@ -307,8 +329,14 @@ class ConfigService {
 
     const status = data.status || existing.statusRaw || 'processing';
     const assets = data.assets ? JSON.stringify(data.assets) : JSON.stringify(existing.assets || {});
-    const timeline = data.timeline ? JSON.stringify(data.timeline) : JSON.stringify(existing.timeline || {});
-    
+    const timeline = JSON.stringify({
+      ...(data.timeline || existing.timeline || {}),
+      fases: data.fases || existing.fases || [],
+      progresso: data.progresso !== undefined ? data.progresso : existing.progresso,
+      faseAtual: data.faseAtual !== undefined ? data.faseAtual : existing.faseAtual,
+      erro: data.erro !== undefined ? data.erro : existing.erro
+    });
+
     await db.execute(
       'UPDATE productions SET status = ?, assets = ?, timeline = ? WHERE id = ?',
       [status, assets, timeline, id]

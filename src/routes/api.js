@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { ConfigService } = require('../services/config');
-const { CostService } = require('../services/cost');
 const auth = require('../middleware/auth');
-const rateLimit = require('../middleware/rateLimit');
 
 const configService = new ConfigService();
-const costService = new CostService();
 
 // Health check endpoint
 router.get('/health', auth, async (req, res) => {
@@ -23,14 +20,6 @@ router.get('/health', auth, async (req, res) => {
   }
 });
 
-// Execute endpoint
-router.post('/execute', auth, rateLimit.publish, async (req, res) => {
-  try {
-    const execution = await configService.createExecution(req.body);
-    res.json({ success: true, execution });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
+// POST /execute lives in routes/execution.js - it actually dispatches the
+// pipeline worker, this stub duplicate never did.
 module.exports = router;

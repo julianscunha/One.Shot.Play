@@ -1,5 +1,4 @@
-const { retry, RetryError } = require('../../utils/retry');
-const { ERROR_TYPES, isRetryable, classifyError } = require('../../utils/errors');
+const { ERROR_TYPES, classifyError } = require('../../utils/errors');
 
 class PipelineEngine {
   constructor(configService) {
@@ -19,7 +18,7 @@ class PipelineEngine {
     const execution = await this.configService.getExecution(executionId);
     if (!execution) throw new Error('Execução não encontrada');
 
-    const fasesIniciais = this.fases.map(f => ({
+    let fasesState = this.fases.map(f => ({
       nome: f.nome,
       status: 'pendente',
       tentativas: 0
@@ -27,34 +26,29 @@ class PipelineEngine {
 
     await this.configService.updateExecution(executionId, {
       status: 'executando',
-      fases: fasesIniciais,
+      fases: fasesState,
       progresso: 0
     });
 
     for (let i = 0; i < this.fases.length; i++) {
       const fase = this.fases[i];
 
+      fasesState = fasesState.map((f, idx) => idx === i ? { ...f, status: 'executando' } : f);
       await this.configService.updateExecution(executionId, {
         faseAtual: fase.nome,
-        progresso: Math.round((i / this.fases.length) * 100)
-      });
-
-      await this.configService.updateExecution(executionId, {
-        fases: execution.fases.map((f, idx) =>
-          idx === i ? { ...f, status: 'executando' } : f
-        )
+        progresso: Math.round((i / this.fases.length) * 100),
+        fases: fasesState
       });
 
       try {
         await this.executarFase(executionId, fase, template);
-        await this.configService.updateExecution(executionId, {
-          fases: execution.fases.map((f, idx) =>
-            idx === i ? { ...f, status: 'concluido', fim: new Date() } : f
-          )
-        });
+        fasesState = fasesState.map((f, idx) =>
+          idx === i ? { ...f, status: 'concluido', fim: new Date() } : f
+        );
+        await this.configService.updateExecution(executionId, { fases: fasesState });
       } catch (error) {
         const tipo = classifyError(error);
-        const tentativas = (execution.fases[i]?.tentativas || 0) + 1;
+        const tentativas = (fasesState[i]?.tentativas || 0) + 1;
 
         await this.configService.addLog({
           nivel: 'error',
@@ -65,21 +59,19 @@ class PipelineEngine {
         });
 
         if (tipo === ERROR_TYPES.FATAL || tentativas >= 3) {
+          fasesState = fasesState.map((f, idx) =>
+            idx === i ? { ...f, status: 'falha', erro: error.message, tentativas } : f
+          );
           await this.configService.updateExecution(executionId, {
             status: 'falha',
             erro: error.message,
-            fases: execution.fases.map((f, idx) =>
-              idx === i ? { ...f, status: 'falha', erro: error.message, tentativas } : f
-            )
+            fases: fasesState
           });
           throw error;
         }
 
-        await this.configService.updateExecution(executionId, {
-          fases: execution.fases.map((f, idx) =>
-            idx === i ? { ...f, tentativas } : f
-          )
-        });
+        fasesState = fasesState.map((f, idx) => idx === i ? { ...f, tentativas } : f);
+        await this.configService.updateExecution(executionId, { fases: fasesState });
 
         await this.delay(10000 * tentativas);
         i--;
@@ -100,21 +92,10 @@ class PipelineEngine {
       execution: executionId
     });
 
-    const resultado = await retry(
-      async () => {
-        const provider = template.provedores?.[this.mapearTipoProvider(fase.nome)];
-        if (!provider) {
-          throw new Error(`Provider não configurado para ${fase.nome}`);
-        }
-        return { provider, resultado: 'ok' };
-      },
-      {
-        maxAttempts: 3,
-        initialDelay: 10000,
-        factor: 2,
-        shouldRetry: isRetryable
-      }
-    );
+    // ponytail: placeholder - no real generation wired yet (AIVideoGenerator/YouTube
+    // upload aren't connected here), so this just marks the phase done. Replace when
+    // real generation lands; drop mapearTipoProvider() then too if still unused.
+    const resultado = { resultado: 'ok' };
 
     await this.configService.addLog({
       nivel: 'info',

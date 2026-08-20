@@ -3,11 +3,11 @@ const path = require('path');
 const { google } = require('googleapis');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const { Logger } = require('./logger');
+const { createLogger } = require('./logger');
 
 class CredentialManager {
   constructor() {
-    this.logger = new Logger('CredentialManager');
+    this.logger = createLogger('CredentialManager');
     this.credentialsPath = path.join(__dirname, '..', 'config', 'credentials.json');
     this.tokensPath = path.join(__dirname, '..', 'config', 'tokens.json');
     this.credentials = {};

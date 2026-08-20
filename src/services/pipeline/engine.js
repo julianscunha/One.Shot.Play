@@ -2,14 +2,13 @@ const path = require('path');
 const fs = require('fs').promises;
 const { ERROR_TYPES, classifyError } = require('../../utils/errors');
 const { AIVideoGenerator } = require('../../utils/ai-video-generator');
+const { uploadVideo } = require('../youtube/uploader');
 
 class PipelineEngine {
   constructor(configService) {
     this.configService = configService;
-    // ponytail: credentials come from env vars via AIVideoGenerator's own fallback
-    // (process.env.OPENROUTER_API_KEY etc). ConfigService.saveConfig() corrupts
-    // object-valued settings (String(value) -> "[object Object]"), so DB-stored
-    // provider credentials aren't usable yet - fix that first if wiring dashboard config.
+    // ponytail: AIVideoGenerator credentials come from env vars (process.env.OPENROUTER_API_KEY
+    // etc), not from the dashboard settings table yet - wire that up if/when needed.
     this.aiGenerator = new AIVideoGenerator({});
     this.fases = [
       { nome: 'estrategia', acao: 'gerarEstrategia' },
@@ -171,10 +170,11 @@ class PipelineEngine {
     return this.mergeAssets(executionId, { legenda: 'skipped (no captioning implementation yet)' });
   }
 
-  // ponytail: src/services/youtube/ is empty - no uploader exists yet. Stub until
-  // one is built.
   async publicarYouTube(executionId) {
-    return this.mergeAssets(executionId, { upload: 'skipped (no YouTube uploader implementation yet)' });
+    const execution = await this.configService.getExecution(executionId);
+    const { script, videoPath } = execution.assets || {};
+    const upload = await uploadVideo(videoPath, script || {});
+    return this.mergeAssets(executionId, { upload });
   }
 
   delay(ms) {

@@ -298,6 +298,23 @@ class ConfigService {
     }));
   }
 
+  async updateExecution(id, data) {
+    const db = await this._getDb();
+    const existing = await this.getExecution(id);
+    if (!existing) return null;
+
+    const status = data.status || existing.statusRaw || 'processing';
+    const assets = data.assets ? JSON.stringify(data.assets) : JSON.stringify(existing.assets || {});
+    const timeline = data.timeline ? JSON.stringify(data.timeline) : JSON.stringify(existing.timeline || {});
+    
+    await db.execute(
+      'UPDATE productions SET status = ?, assets = ?, timeline = ? WHERE id = ?',
+      [status, assets, timeline, id]
+    );
+
+    return await this.getExecution(id);
+  }
+
   // ==================== Schedules ====================
   async listSchedules() {
     const db = await this._getDb();

@@ -1,6 +1,7 @@
-const { ERROR_TYPES, classifyError } = require('../utils/errors');
+const logger = require('../utils/logger');
+const { classifyError } = require('../utils/errors');
 
-module.exports = (error, req, res, next) => {
+module.exports = (error, req, res, _next) => {
   const tipo = classifyError(error);
   const status = error.status || 500;
 

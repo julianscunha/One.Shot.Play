@@ -174,6 +174,18 @@ class Database {
     });
   }
 
+  async getRow(sql, params = []) {
+    return new Promise((resolve, reject) => {
+      this.db.get(sql, params, (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row);
+        }
+      });
+    });
+  }
+
   generateId(prefix = '') {
     return prefix + Date.now() + Math.random().toString(36).substr(2, 9);
   }

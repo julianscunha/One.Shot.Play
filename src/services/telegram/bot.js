@@ -46,9 +46,10 @@ class TelegramBotService {
   async handleStatus(msg) {
     if (!this.isAllowed(msg.from.id)) return;
     try {
-      const health = await fetch('/api/health').then(r => r.json());
+      const globalFetch = globalThis.fetch || require('node-fetch');
+      const health = await globalFetch('http://localhost:3456/api/health').then(r => r.json());
       await this.bot.sendMessage(msg.chat.id, `Status: ${health.status}\nUptime: ${Math.round(health.uptime / 60)} minutos`);
-    } catch (error) {
+    } catch (_error) {
       await this.bot.sendMessage(msg.chat.id, 'Erro ao obter status');
     }
   }
@@ -56,10 +57,11 @@ class TelegramBotService {
   async handleSchedule(msg) {
     if (!this.isAllowed(msg.from.id)) return;
     try {
-      const schedules = await fetch('/api/schedules').then(r => r.json());
+      const globalFetch = globalThis.fetch || require('node-fetch');
+      const schedules = await globalFetch('http://localhost:3456/api/schedules').then(r => r.json());
       const texto = schedules.map(s => `${s.nome} - ${s.frequencia} - ${s.horario}`).join('\n') || 'Nenhum agendamento';
       await this.bot.sendMessage(msg.chat.id, texto);
-    } catch (error) {
+    } catch (_error) {
       await this.bot.sendMessage(msg.chat.id, 'Erro ao obter agendamentos');
     }
   }
@@ -79,10 +81,11 @@ class TelegramBotService {
   async handleLogs(msg) {
     if (!this.isAllowed(msg.from.id)) return;
     try {
-      const logs = await fetch('/api/logs?limit=10').then(r => r.json());
+      const globalFetch = globalThis.fetch || require('node-fetch');
+      const logs = await globalFetch('http://localhost:3456/api/logs?limit=10').then(r => r.json());
       const texto = logs.map(l => `${l.nivel}: ${l.mensagem}`).join('\n') || 'Sem logs';
       await this.bot.sendMessage(msg.chat.id, texto);
-    } catch (error) {
+    } catch (_error) {
       await this.bot.sendMessage(msg.chat.id, 'Erro ao obter logs');
     }
   }

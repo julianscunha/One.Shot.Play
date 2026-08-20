@@ -35,18 +35,33 @@ class ConfigService {
     return settings.length > 0 && settings[0].value === 'true';
   }
 
+  // Object-valued settings (e.g. { openrouter: { apiKey: ... } }) get JSON-encoded;
+  // everything else stays a plain string, matching how it's always been stored
+  // (some code compares settings.value === 'true' directly).
+  static _decodeConfigValue(value) {
+    if (typeof value === 'string' && (value.startsWith('{') || value.startsWith('['))) {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return value;
+  }
+
   async getConfig() {
     const db = await this._getDb();
     const rows = await db.getRows('SELECT key, value FROM settings');
-    return Object.fromEntries(rows.map(r => [r.key, r.value]));
+    return Object.fromEntries(rows.map(r => [r.key, ConfigService._decodeConfigValue(r.value)]));
   }
 
   async saveConfig(data) {
     const db = await this._getDb();
     for (const [key, value] of Object.entries(data)) {
+      const stored = (value !== null && typeof value === 'object') ? JSON.stringify(value) : String(value);
       await db.execute(
         'INSERT INTO settings (key, value, description) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
-        [key, String(value), 'User config']
+        [key, stored, 'User config']
       );
     }
     return data;

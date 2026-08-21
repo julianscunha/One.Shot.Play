@@ -163,6 +163,7 @@
 
   <script>
     let templatesData = [];
+    let editingId = null;
 
     async function loadTemplates() {
       try {
@@ -231,17 +232,44 @@
     function getTemplateTypeIcon(tipo) { return typeIcons[tipo] || 'T'; }
 
     function showTemplateModal() {
+      editingId = null;
       document.getElementById('modal-title').textContent = 'Novo Template';
+      document.getElementById('template-form').reset();
       document.getElementById('template-modal').classList.add('show');
     }
     function closeTemplateModal() {
       document.getElementById('template-modal').classList.remove('show');
     }
 
-    function viewTemplateDetails(id) { showNotification(`Template ${id}`, 'info'); }
-    function editTemplate(id) { showNotification(`Editar ${id}`, 'info'); }
-    function deleteTemplate(id) {
-      if (confirm('Excluir este template?')) showNotification(`Excluído ${id}`, 'warning');
+    function viewTemplateDetails(id) {
+      const t = templatesData.find(t => t.id === id);
+      if (!t) return;
+      showNotification(`${t.nome} — ${t.tipo} — ${t.descricao || 'sem descrição'}`, 'info');
+    }
+
+    function editTemplate(id) {
+      const t = templatesData.find(t => t.id === id);
+      if (!t) return;
+      editingId = id;
+      document.getElementById('modal-title').textContent = 'Editar Template';
+      document.getElementById('template-name').value = t.nome || '';
+      document.getElementById('template-type').value = t.tipo || '';
+      document.getElementById('template-language').value = t.idioma || '';
+      document.getElementById('template-description').value = t.descricao || '';
+      document.getElementById('template-settings').value = t.config ? JSON.stringify(t.config, null, 2) : '';
+      document.getElementById('template-modal').classList.add('show');
+    }
+
+    async function deleteTemplate(id) {
+      if (!confirm('Excluir este template?')) return;
+      try {
+        const response = await fetch(`/api/templates/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Falha ao excluir');
+        showNotification('Template excluído.', 'warning');
+        loadTemplates();
+      } catch (error) {
+        showNotification('Erro ao excluir template.', 'error');
+      }
     }
 
     function exportTemplates() {
@@ -269,9 +297,34 @@
 
     document.getElementById('template-form')?.addEventListener('submit', async function(e) {
       e.preventDefault();
-      closeTemplateModal();
-      loadTemplates();
-      showNotification('Template criado.', 'success');
+      let config;
+      const rawSettings = document.getElementById('template-settings').value.trim();
+      try {
+        config = rawSettings ? JSON.parse(rawSettings) : {};
+      } catch (error) {
+        showNotification('JSON de configurações inválido.', 'error');
+        return;
+      }
+      const body = {
+        nome: document.getElementById('template-name').value,
+        tipo: document.getElementById('template-type').value,
+        idioma: document.getElementById('template-language').value,
+        descricao: document.getElementById('template-description').value,
+        config
+      };
+      try {
+        const response = await fetch(editingId ? `/api/templates/${editingId}` : '/api/templates', {
+          method: editingId ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) throw new Error('Falha ao salvar');
+        closeTemplateModal();
+        loadTemplates();
+        showNotification(editingId ? 'Template atualizado.' : 'Template criado.', 'success');
+      } catch (error) {
+        showNotification('Erro ao salvar template.', 'error');
+      }
     });
 
     // Filter handlers

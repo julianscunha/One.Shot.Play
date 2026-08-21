@@ -65,10 +65,10 @@
             <div class="provider-card" data-provider="openrouter">
               <div class="provider-card-header">
                 <span class="provider-icon" aria-hidden="true">OR</span>
-                <span class="status-badge neutral">Requer configuração</span>
+                <span class="status-badge warning">Obrigatório</span>
               </div>
               <h4 class="provider-name">OpenRouter</h4>
-              <p class="provider-desc">Acesso a múltiplos modelos IA via uma única API.</p>
+              <p class="provider-desc">Gera roteiro, imagens e narração do vídeo. Sem esta chave o sistema roda em modo simulado (conteúdo fake).</p>
               <div class="form-group">
                 <label for="openrouter-key">Chave da API</label>
                 <input type="password" id="openrouter-key" placeholder="sk-..." autocomplete="off">
@@ -91,10 +91,10 @@
             <div class="provider-card" data-provider="youtube">
               <div class="provider-card-header">
                 <span class="provider-icon" aria-hidden="true">YT</span>
-                <span class="status-badge neutral">Requer configuração</span>
+                <span class="status-badge warning">Obrigatório</span>
               </div>
               <h4 class="provider-name">YouTube Data API</h4>
-              <p class="provider-desc">Gerencie canais, playlists e uploads do YouTube.</p>
+              <p class="provider-desc">Necessário para publicar o vídeo pronto no canal (fase final do pipeline).</p>
               <div class="form-group">
                 <label for="youtube-key">Chave da API</label>
                 <input type="password" id="youtube-key" placeholder="AIza..." autocomplete="off">
@@ -113,10 +113,10 @@
             <div class="provider-card" data-provider="telegram">
               <div class="provider-card-header">
                 <span class="provider-icon" aria-hidden="true">TG</span>
-                <span class="status-dot success"></span>
+                <span class="status-badge neutral">Opcional</span>
               </div>
               <h4 class="provider-name">Bot de Notificações</h4>
-              <p class="provider-desc">Alertas em tempo real sobre uploads e status.</p>
+              <p class="provider-desc">Alertas em tempo real sobre uploads e status. Sistema funciona sem isso.</p>
               <div class="form-group">
                 <label for="telegram-token">Token do bot</label>
                 <input type="password" id="telegram-token" placeholder="123456:ABC-..." autocomplete="off">

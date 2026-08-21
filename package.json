@@ -23,7 +23,6 @@
     "inquirer": "^14.1.0",
     "openai": "^7.5.0",
     "playwright": "^1.62.1",
-    "replicate": "^1.4.0",
     "sqlite3": "^5.1.7",
     "winston": "^3.11.0"
   },

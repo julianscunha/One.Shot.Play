@@ -1,5 +1,4 @@
 const OpenAI = require('openai');
-const Replicate = require('replicate');
 const fs = require('fs').promises;
 const path = require('path');
 const { pathToFileURL } = require('url');
@@ -71,26 +70,6 @@ class AIVideoGenerator {
       });
 
       this.logger.info('OpenAI fallback service initialized');
-    }
-
-    // ============================================================
-    // Replicate
-    // ============================================================
-
-    const replicateKey =
-      credentials.replicate?.apiKey ||
-      process.env.REPLICATE_API_KEY;
-
-    if (replicateKey) {
-      this.replicate = new Replicate({
-        auth: replicateKey,
-      });
-
-      this.logger.info('Replicate service initialized');
-    } else {
-      this.logger.warn(
-        'Replicate API key not found - advanced video generation unavailable'
-      );
     }
 
     // ============================================================
@@ -855,20 +834,6 @@ Return ONLY valid JSON (no markdown fences, no commentary) matching exactly this
     );
 
     try {
-      // Replicate first if configured
-      if (
-        this.replicate &&
-        this.replicate.auth
-      ) {
-        return await this.generateReplicateVideo(
-          script,
-          visualAssets,
-          audioPath,
-          outputPath
-        );
-      }
-
-      // Otherwise use local FFmpeg slideshow
       return await this.generateSlideshowVideo(
         script,
         visualAssets,
@@ -887,59 +852,6 @@ Return ONLY valid JSON (no markdown fences, no commentary) matching exactly this
         outputPath
       );
     }
-  }
-
-  async generateReplicateVideo(
-    script,
-    visualAssets,
-    audioPath,
-    outputPath
-  ) {
-    if (
-      !visualAssets ||
-      visualAssets.length === 0
-    ) {
-      throw new Error(
-        'No visual assets available for Replicate video generation'
-      );
-    }
-
-    const output =
-      await this.replicate.run(
-        'wan-video/wan-2.7-i2v',
-        {
-          input: {
-            image: visualAssets[0],
-            prompt:
-              script.title ||
-              'smooth cinematic motion',
-            duration: 5,
-            resolution: '720p',
-          },
-        }
-      );
-
-    if (
-      output &&
-      output.length > 0
-    ) {
-      await this.downloadVideo(
-        output[0],
-        outputPath
-      );
-
-      await this.addAudioToVideo(
-        outputPath,
-        audioPath,
-        outputPath
-      );
-    } else {
-      throw new Error(
-        'Replicate returned no video'
-      );
-    }
-
-    return outputPath;
   }
 
   async generateSlideshowVideo(
@@ -1708,39 +1620,6 @@ Return ONLY valid JSON (no markdown fences, no commentary) matching exactly this
     } catch {
       return false;
     }
-  }
-
-  async downloadVideo(
-    url,
-    outputPath
-  ) {
-    const response =
-      await axios({
-        method: 'GET',
-        url,
-        responseType: 'stream',
-      });
-
-    const writer =
-      require('fs').createWriteStream(
-        outputPath
-      );
-
-    response.data.pipe(writer);
-
-    return new Promise(
-      (resolve, reject) => {
-        writer.on(
-          'finish',
-          resolve
-        );
-
-        writer.on(
-          'error',
-          reject
-        );
-      }
-    );
   }
 
   async cleanupDirectory(

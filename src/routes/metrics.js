@@ -62,7 +62,7 @@ router.get('/metrics/templates', auth, async (req, res) => {
 router.get('/metrics/apis', auth, async (req, res) => {
   try {
     const executions = await configService.listExecutions(1000);
-    const providers = ['openrouter', 'replicate', 'youtube'];
+    const providers = ['openrouter', 'youtube'];
 
     const apiMetrics = providers.map(provedor => {
       const reqs = executions.filter(e => e.provedor === provedor);

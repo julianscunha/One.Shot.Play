@@ -46,8 +46,9 @@ adding a new cross-cutting concern, it likely belongs here or is read from here.
 
 **Multi-provider AI**: `CredentialManager` manages provider credentials
 (OpenRouter, and others per `src/config/providers`); `AIVideoGenerator` drives
-generation calls (OpenAI/Replicate-style APIs) and video assembly (`runFFmpeg`
-in `src/utils` wraps ffmpeg; requires ffmpeg installed on PATH).
+generation calls (OpenAI-style APIs) and assembles video as a local FFmpeg
+slideshow (`runFFmpeg` in `src/utils` wraps ffmpeg; requires ffmpeg installed
+on PATH). No cloud video-rendering provider is used.
 
 **Verification**: `PreCheckService`/`PostCheckService`
 (`src/services/verification`) validate before/after each generation step.

@@ -23,26 +23,26 @@ function displayTemplates(templates) {
     return;
   }
   grid.innerHTML = templates.map(t => `
-    <div class="template-card" data-template-id="${t.id}">
+    <div class="template-card" data-template-id="${esc(t.id)}">
       <div class="template-card-header">
-        <div class="template-icon" aria-hidden="true">${getTemplateIcon(t.tipo)}</div>
+        <div class="template-icon" aria-hidden="true">${esc(getTemplateIcon(t.tipo))}</div>
         <div>
-          <h4 class="template-title">${t.nome}</h4>
+          <h4 class="template-title">${esc(t.nome)}</h4>
           <span class="template-badge">${t.tipo === 'standard' ? 'Padrão' : t.tipo === 'quick' ? 'Rápido' : 'Detalhado'}</span>
         </div>
       </div>
       <div class="template-card-body">
-        <p class="template-description">${t.descricao || 'Sem descrição.'}</p>
+        <p class="template-description">${esc(t.descricao || 'Sem descrição.')}</p>
         <div class="template-stats">
           <div class="stat-item"><span class="stat-value">${t.uso || 0}</span><span class="stat-label">usos</span></div>
           <div class="stat-item"><span class="stat-value">$${t.custo || '0.00'}</span><span class="stat-label">custo</span></div>
         </div>
       </div>
       <div class="card-actions">
-        <button class="btn-outline" data-action="preview" data-id="${t.id}">
+        <button class="btn-outline" data-action="preview" data-id="${esc(t.id)}">
           Visualizar
         </button>
-        <button class="btn-primary" data-action="execute" data-id="${t.id}">
+        <button class="btn-primary" data-action="execute" data-id="${esc(t.id)}">
           Executar
         </button>
       </div>

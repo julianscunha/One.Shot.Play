@@ -87,7 +87,7 @@ function updateTables() {
     const rateClass = rate >= 95 ? 'success' : rate >= 80 ? 'warning' : 'error';
     return `
       <tr>
-        <td><strong>${t.nome}</strong></td>
+        <td><strong>${esc(t.nome)}</strong></td>
         <td>${t.execucoes || 0}</td>
         <td><span class="status-badge ${rateClass}">${rate}%</span></td>
         <td>${t.taxaErro ?? 0}%</td>
@@ -102,7 +102,7 @@ function updateTables() {
     const uptimeColor = a.uptime >= 99.9 ? 'success' : a.uptime >= 99 ? 'warning' : 'error';
     return `
       <tr>
-        <td><strong>${a.provedor}</strong></td>
+        <td><strong>${esc(a.provedor)}</strong></td>
         <td>${a.requisicoes || 0}</td>
         <td>${a.taxaErro ?? 0}%</td>
         <td>$${(a.custo || 0).toFixed(2)}</td>

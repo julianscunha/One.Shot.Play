@@ -40,26 +40,26 @@ function displaySchedules(schedules) {
   grid.innerHTML = schedules.map(s => `
     <div class="schedule-card ${s.ativo ? 'active' : 'inactive'}">
       <div class="schedule-card-header">
-        <h4 class="schedule-title">${s.nome}</h4>
+        <h4 class="schedule-title">${esc(s.nome)}</h4>
         <span class="status-badge ${s.ativo ? 'success' : 'neutral'}">
           ${s.ativo ? 'Ativo' : 'Inativo'}
         </span>
       </div>
       <div class="schedule-card-body">
         <div class="schedule-details">
-          <div class="schedule-detail"><span class="text-tertiary">Template:</span> <strong>${s.template}</strong></div>
-          <div class="schedule-detail"><span class="text-tertiary">Frequência:</span> <strong>${s.frequencia}</strong></div>
+          <div class="schedule-detail"><span class="text-tertiary">Template:</span> <strong>${esc(s.template)}</strong></div>
+          <div class="schedule-detail"><span class="text-tertiary">Frequência:</span> <strong>${esc(s.frequencia)}</strong></div>
           <div class="schedule-detail"><span class="text-tertiary">Próximo:</span> <strong>${s.proximo ? new Date(s.proximo).toLocaleString('pt-BR') : '—'}</strong></div>
-          <div class="schedule-detail"><span class="text-tertiary">Última execução:</span> <strong>${s.ultimaExecucao || 'Nunca'}</strong></div>
+          <div class="schedule-detail"><span class="text-tertiary">Última execução:</span> <strong>${esc(s.ultimaExecucao || 'Nunca')}</strong></div>
           <div class="schedule-detail"><span class="text-tertiary">Custo:</span> <strong>$${(s.custo || 0).toFixed(2)}</strong></div>
         </div>
       </div>
       <div class="card-actions">
-        <button class="btn-outline" data-action="edit" data-id="${s.id}">Editar</button>
-        <button class="btn-secondary" data-action="toggle" data-id="${s.id}" data-ativo="${s.ativo}">
+        <button class="btn-outline" data-action="edit" data-id="${esc(s.id)}">Editar</button>
+        <button class="btn-secondary" data-action="toggle" data-id="${esc(s.id)}" data-ativo="${s.ativo}">
           ${s.ativo ? 'Pausar' : 'Ativar'}
         </button>
-        <button class="btn-text" data-action="delete" data-id="${s.id}">Excluir</button>
+        <button class="btn-text" data-action="delete" data-id="${esc(s.id)}">Excluir</button>
       </div>
     </div>
   `).join('');

@@ -15,6 +15,10 @@ window.fetch = async function(url, options) {
 };
 loadApiKey();
 
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function showNotification(message, type = 'info') {
   const container = document.getElementById('notification-container');
   if (!container) return;

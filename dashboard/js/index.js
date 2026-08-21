@@ -34,9 +34,9 @@ function updateExecutionsList(executions) {
                      : 'pending';
     return `
       <div class="execution-item">
-        <span class="execution-status ${statusClass}">${e.status}</span>
+        <span class="execution-status ${statusClass}">${esc(e.status)}</span>
         <div class="execution-info">
-          <strong>${e.template}</strong>
+          <strong>${esc(e.template)}</strong>
           <span>${new Date(e.timestamp).toLocaleString('pt-BR')}</span>
         </div>
       </div>

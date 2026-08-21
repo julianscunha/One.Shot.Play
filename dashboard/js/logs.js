@@ -49,11 +49,11 @@ function displayLogs(logs) {
                          : log.nivel === 'info' ? 'info'
                          : 'neutral';
         return `
-          <div class="log-item" data-id="${log.id}">
-            <span class="status-badge ${statusClass}">${log.nivel}</span>
+          <div class="log-item" data-id="${esc(log.id)}">
+            <span class="status-badge ${statusClass}">${esc(log.nivel)}</span>
             <span class="log-timestamp">${new Date(log.createdAt).toLocaleString('pt-BR')}</span>
-            <span class="text-tertiary">[${log.servico}]</span>
-            <span class="log-message">${log.mensagem}</span>
+            <span class="text-tertiary">[${esc(log.servico)}]</span>
+            <span class="log-message">${esc(log.mensagem)}</span>
           </div>
         `;
       }).join('');
@@ -63,11 +63,11 @@ function showLogDetail(log) {
   document.getElementById('modal-title').textContent = `Detalhes — ${log.servico}`;
   document.getElementById('log-detail-content').innerHTML = `
     <div class="log-detail-item">
-      <div class="detail-row"><span class="text-secondary">Nível:</span> <strong>${log.nivel.toUpperCase()}</strong></div>
-      <div class="detail-row"><span class="text-secondary">Serviço:</span> <strong>${log.servico}</strong></div>
+      <div class="detail-row"><span class="text-secondary">Nível:</span> <strong>${esc(log.nivel.toUpperCase())}</strong></div>
+      <div class="detail-row"><span class="text-secondary">Serviço:</span> <strong>${esc(log.servico)}</strong></div>
       <div class="detail-row"><span class="text-secondary">Timestamp:</span> <strong>${new Date(log.createdAt).toLocaleString('pt-BR')}</strong></div>
       <div class="detail-row"><span class="text-secondary">Mensagem:</span></div>
-      <pre class="log-detail-message">${log.mensagem}</pre>
+      <pre class="log-detail-message">${esc(log.mensagem)}</pre>
     </div>
   `;
   document.getElementById('log-detail-modal').classList.add('show');

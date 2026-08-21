@@ -36,14 +36,14 @@ function displayTemplates(templates) {
   grid.innerHTML = templates.map(t => `
     <div class="template-card ${t.uso > 0 ? 'used' : ''}">
       <div class="template-card-header">
-        <div class="template-icon">${getTemplateTypeIcon(t.tipo)}</div>
+        <div class="template-icon">${esc(getTemplateTypeIcon(t.tipo))}</div>
         <div>
-          <h4 class="template-title">${t.nome}</h4>
-          <span class="template-badge ${t.tipo}">${t.tipo === 'standard' ? 'Padrão' : t.tipo === 'quick' ? 'Rápido' : 'Detalhado'}</span>
+          <h4 class="template-title">${esc(t.nome)}</h4>
+          <span class="template-badge ${esc(t.tipo)}">${t.tipo === 'standard' ? 'Padrão' : t.tipo === 'quick' ? 'Rápido' : 'Detalhado'}</span>
         </div>
       </div>
       <div class="template-card-body">
-        <p class="template-description">${t.descricao || 'Sem descrição.'}</p>
+        <p class="template-description">${esc(t.descricao || 'Sem descrição.')}</p>
         <div class="template-stats">
           <div class="stat-item"><span class="stat-value">${t.uso || 0}</span><span class="stat-label">usos</span></div>
           <div class="stat-item"><span class="stat-value">$${t.custo || '0.00'}</span><span class="stat-label">custo</span></div>
@@ -51,13 +51,13 @@ function displayTemplates(templates) {
         </div>
       </div>
       <div class="template-card-footer">
-        <button class="template-action-btn" data-action="view" data-id="${t.id}" title="Ver detalhes">
+        <button class="template-action-btn" data-action="view" data-id="${esc(t.id)}" title="Ver detalhes">
           <span>Ver</span>
         </button>
-        <button class="template-action-btn" data-action="edit" data-id="${t.id}" title="Editar">
+        <button class="template-action-btn" data-action="edit" data-id="${esc(t.id)}" title="Editar">
           <span>Editar</span>
         </button>
-        <button class="template-action-btn" data-action="delete" data-id="${t.id}" title="Excluir">
+        <button class="template-action-btn" data-action="delete" data-id="${esc(t.id)}" title="Excluir">
           <span>Excluir</span>
         </button>
       </div>

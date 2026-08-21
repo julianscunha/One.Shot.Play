@@ -24,7 +24,7 @@ router.get('/templates/:id', auth, async (req, res) => {
   }
 });
 
-router.post('/templates', auth, rateLimit.publish, async (req, res) => {
+router.post('/templates', auth, rateLimit.general, async (req, res) => {
   try {
     const template = await configService.createTemplate(req.body);
     res.json({ success: true, template });
@@ -33,7 +33,7 @@ router.post('/templates', auth, rateLimit.publish, async (req, res) => {
   }
 });
 
-router.put('/templates/:id', auth, rateLimit.publish, async (req, res) => {
+router.put('/templates/:id', auth, rateLimit.general, async (req, res) => {
   try {
     const template = await configService.updateTemplate(req.params.id, req.body);
     res.json({ success: true, template });
@@ -42,7 +42,7 @@ router.put('/templates/:id', auth, rateLimit.publish, async (req, res) => {
   }
 });
 
-router.delete('/templates/:id', auth, rateLimit.publish, async (req, res) => {
+router.delete('/templates/:id', auth, rateLimit.general, async (req, res) => {
   try {
     await configService.deleteTemplate(req.params.id);
     res.json({ success: true });

@@ -20,5 +20,21 @@
         ]
       }
     ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(npm run dev)",
+      "Bash(npm run test)",
+      "Bash(npm start)",
+      "Bash(npm run lint)",
+      "Bash(node index.js *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh api *)"
+    ]
   }
 }

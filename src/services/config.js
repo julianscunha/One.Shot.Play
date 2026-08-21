@@ -83,6 +83,7 @@ class ConfigService {
 
   async createProvider(data) {
     const db = await this._getDb();
+    await db.execute('DELETE FROM providers WHERE tipo = ?', [data.tipo]);
     const id = db.generateId('prov_');
     const config = data.config ? JSON.stringify(data.config) : null;
     await db.execute(

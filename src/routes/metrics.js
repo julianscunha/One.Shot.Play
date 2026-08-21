@@ -27,7 +27,7 @@ router.get('/metrics', auth, async (req, res) => {
   }
 });
 
-router.get('/templates', auth, async (req, res) => {
+router.get('/metrics/templates', auth, async (req, res) => {
   try {
     const templates = await configService.listTemplates();
     const executions = await configService.listExecutions(1000);
@@ -45,7 +45,9 @@ router.get('/templates', auth, async (req, res) => {
         nome: t.nome,
         tipo: t.tipo,
         uso: used,
+        execucoes: used,
         taxaSucesso,
+        taxaErro: used > 0 ? 100 - taxaSucesso : 0,
         custoTotal: parseFloat(custoTotal.toFixed(2)),
         tempoMedio: Math.round(Math.random() * 300) // placeholder: real data would come from execution times
       };
@@ -57,20 +59,24 @@ router.get('/templates', auth, async (req, res) => {
   }
 });
 
-router.get('/apis', auth, async (req, res) => {
+router.get('/metrics/apis', auth, async (req, res) => {
   try {
     const executions = await configService.listExecutions(1000);
+    const providers = ['openrouter', 'replicate', 'youtube'];
 
-    const apiMetrics = {
-      totalRequests: executions.length,
-      successRate: executions.filter(e => e.status === 'success' || e.status === 'concluido').length / Math.max(executions.length, 1),
-      averageTime: Math.round(Math.random() * 5000) + 1000, // placeholder
-      providers: {
-        openrouter: executions.filter(e => e.provedor === 'openrouter').length,
-        replicate: executions.filter(e => e.provedor === 'replicate').length,
-        youtube: executions.filter(e => e.provedor === 'youtube').length
-      }
-    };
+    const apiMetrics = providers.map(provedor => {
+      const reqs = executions.filter(e => e.provedor === provedor);
+      const erros = reqs.filter(e => e.status === 'error' || e.status === 'erro').length;
+      const custo = reqs.reduce((sum, e) => sum + (e.custo || 0), 0);
+
+      return {
+        provedor,
+        requisicoes: reqs.length,
+        taxaErro: reqs.length > 0 ? Math.round((erros / reqs.length) * 100) : 0,
+        custo: parseFloat(custo.toFixed(2)),
+        uptime: reqs.length > 0 ? parseFloat((100 - (erros / reqs.length) * 100).toFixed(1)) : 100
+      };
+    }).filter(a => a.requisicoes > 0);
 
     res.json(apiMetrics);
   } catch (error) {

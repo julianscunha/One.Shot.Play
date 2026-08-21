@@ -10,23 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <script>
-    let _apiKey = "";
-    let _apiKeyPromise = null;
-    function loadApiKey() {
-      if (_apiKeyPromise) return _apiKeyPromise;
-      _apiKeyPromise = fetch("/api/config/browser-key").then(r => r.json()).then(k => { _apiKey = k.apiKey || ""; }).catch(() => { _apiKey = ""; });
-      return _apiKeyPromise;
-    }
-    const _origFetch = window.fetch;
-    window.fetch = function(url, options) {
-      options = options || {};
-      options.headers = options.headers || {};
-      if (_apiKey) options.headers["x-api-key"] = _apiKey;
-      return _origFetch(url, options);
-    };
-    loadApiKey();
-  </script>
+  <script src="/js/common.js"></script>
   <nav class="app-nav">
     <a href="/" class="nav-brand">
       <span class="brand-dot"></span>
@@ -171,10 +155,10 @@
 
     <!-- Action bar -->
     <div class="setup-actions">
-      <button class="btn-secondary" onclick="resetSettings()" type="button">
+      <button class="btn-secondary" id="btn-reset" type="button">
         Restaurar padrão
       </button>
-      <button class="btn-primary" onclick="saveSettings()" type="button">
+      <button class="btn-primary" id="btn-save" type="button">
         Salvar configurações
       </button>
     </div>
@@ -182,66 +166,6 @@
 
   <div id="notification-container" class="notification-container"></div>
 
-  <script>
-    const FIELD_IDS = ['channel-name', 'upload-quality', 'upload-visibility', 'api-key',
-      'session-timeout', 'enable-logging', 'max-retries', 'retry-delay', 'timeout'];
-
-    async function loadSettings() {
-      try {
-        await loadApiKey();
-        const response = await fetch('/api/config');
-        const config = await response.json();
-        for (const id of FIELD_IDS) {
-          const el = document.getElementById(id);
-          if (el && config[id] !== undefined) el.value = config[id];
-        }
-      } catch (error) {
-        showNotification('Erro ao carregar configurações.', 'error');
-      }
-    }
-
-    async function saveSettings() {
-      const body = {};
-      for (const id of FIELD_IDS) {
-        const el = document.getElementById(id);
-        if (el) body[id] = el.value;
-      }
-      try {
-        const response = await fetch('/api/config', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        if (!response.ok) throw new Error('Falha ao salvar');
-        showNotification('Configurações salvas com sucesso.', 'success');
-      } catch (error) {
-        showNotification('Erro ao salvar configurações.', 'error');
-      }
-    }
-
-    function resetSettings() {
-      if (confirm('Restaurar as configurações padrão? Esta ação não pode ser desfeita.')) {
-        document.querySelectorAll('main input, main select').forEach(el => {
-          el.value = el.defaultValue || (el.options && el.options[0] ? el.options[0].value : '');
-        });
-        saveSettings();
-        showNotification('Configurações restauradas para o padrão.', 'info');
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', loadSettings);
-
-    function showNotification(message, type = 'info') {
-      const container = document.getElementById('notification-container');
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.innerHTML = `
-        <span class="notification-message">${message}</span>
-        <button class="notification-close" onclick="this.parentElement.remove()" type="button">&times;</button>
-      `;
-      container.appendChild(notification);
-      setTimeout(() => notification.remove(), 5000);
-    }
-  </script>
+  <script src="/js/settings.js" defer></script>
 </body>
 </html>

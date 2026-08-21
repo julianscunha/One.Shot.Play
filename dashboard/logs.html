@@ -10,23 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <script>
-    let _apiKey = "";
-    let _apiKeyPromise = null;
-    function loadApiKey() {
-      if (_apiKeyPromise) return _apiKeyPromise;
-      _apiKeyPromise = fetch("/api/config/browser-key").then(r => r.json()).then(k => { _apiKey = k.apiKey || ""; }).catch(() => { _apiKey = ""; });
-      return _apiKeyPromise;
-    }
-    const _origFetch = window.fetch;
-    window.fetch = function(url, options) {
-      options = options || {};
-      options.headers = options.headers || {};
-      if (_apiKey) options.headers["x-api-key"] = _apiKey;
-      return _origFetch(url, options);
-    };
-    loadApiKey();
-  </script>
+  <script src="/js/common.js"></script>
   <nav class="app-nav">
     <a href="/" class="nav-brand">
       <span class="brand-dot"></span>
@@ -52,10 +36,10 @@
       </div>
       <p class="header-desc">Acompanhamento detalhado de todas as atividades e execuções do sistema.</p>
       <div class="header-actions">
-        <button class="btn-secondary" onclick="loadLogs()" type="button">
+        <button class="btn-secondary" id="btn-reload-logs" type="button">
           Atualizar
         </button>
-        <button class="btn-primary" onclick="exportLogs()" type="button">
+        <button class="btn-primary" id="btn-export-logs" type="button">
           Exportar
         </button>
       </div>
@@ -99,8 +83,8 @@
         </div>
       </div>
       <div class="filter-actions">
-        <button class="btn-primary" onclick="applyFilters()" type="button">Aplicar</button>
-        <button class="btn-secondary" onclick="clearFilters()" type="button">Limpar</button>
+        <button class="btn-primary" id="btn-apply-filters" type="button">Aplicar</button>
+        <button class="btn-secondary" id="btn-clear-filters" type="button">Limpar</button>
       </div>
     </div>
 
@@ -126,7 +110,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3 id="modal-title">Detalhes do Log</h3>
-        <button class="modal-close" onclick="closeLogDetail()" type="button">&times;</button>
+        <button class="modal-close" id="btn-close-log-detail" type="button">&times;</button>
       </div>
       <div class="modal-body" id="log-detail-content"></div>
     </div>
@@ -134,110 +118,6 @@
 
   <div id="notification-container" class="notification-container"></div>
 
-  <script>
-    let allLogs = [];
-
-    async function loadLogs() {
-      try {
-        const url = new URL('/api/logs', window.location.origin);
-        const nivel = document.getElementById('filter-nivel').value;
-        const servico = document.getElementById('filter-servico').value;
-        if (nivel) url.searchParams.append('nivel', nivel);
-        if (servico) url.searchParams.append('servico', servico);
-
-        const response = await fetch(url);
-        allLogs = await response.json();
-        updateLogStats();
-        displayLogs(allLogs);
-      } catch (error) {
-        console.error('Erro ao carregar logs:', error);
-        showNotification('Erro ao carregar logs', 'error');
-      }
-    }
-
-    function applyFilters() { loadLogs(); }
-
-    function clearFilters() {
-      document.getElementById('filter-nivel').value = '';
-      document.getElementById('filter-servico').value = '';
-      document.getElementById('filter-search').value = '';
-      loadLogs();
-    }
-
-    function updateLogStats() {
-      document.getElementById('total-logs').textContent = allLogs.length;
-      document.getElementById('error-logs').textContent = allLogs.filter(l => l.nivel === 'error').length;
-      document.getElementById('warning-logs').textContent = allLogs.filter(l => l.nivel === 'warn').length;
-      document.getElementById('info-logs').textContent = allLogs.filter(l => l.nivel === 'info').length;
-    }
-
-    function displayLogs(logs) {
-      const search = document.getElementById('filter-search')?.value.toLowerCase() || '';
-      const filtered = search ? logs.filter(log =>
-        (log.mensagem || '').toLowerCase().includes(search) ||
-        (log.servico || '').toLowerCase().includes(search)) : logs;
-
-      document.getElementById('logs-list').innerHTML = filtered.length === 0
-        ? '<div class="loading-state"><p>Nenhum log encontrado.</p></div>'
-        : filtered.map(log => {
-            const statusClass = log.nivel === 'error' ? 'error'
-                             : log.nivel === 'warn' ? 'warning'
-                             : log.nivel === 'info' ? 'info'
-                             : 'neutral';
-            return `
-              <div class="log-item" onclick="showLogDetail('${encodeURIComponent(JSON.stringify(log))}')">
-                <span class="status-badge ${statusClass}">${log.nivel}</span>
-                <span class="log-timestamp">${new Date(log.createdAt).toLocaleString('pt-BR')}</span>
-                <span class="text-tertiary">[${log.servico}]</span>
-                <span class="log-message">${log.mensagem}</span>
-              </div>
-            `;
-          }).join('');
-    }
-
-    function showLogDetail(encodedLog) {
-      const log = JSON.parse(decodeURIComponent(encodedLog));
-      document.getElementById('modal-title').textContent = `Detalhes — ${log.servico}`;
-      document.getElementById('log-detail-content').innerHTML = `
-        <div class="log-detail-item">
-          <div class="detail-row"><span class="text-secondary">Nível:</span> <strong>${log.nivel.toUpperCase()}</strong></div>
-          <div class="detail-row"><span class="text-secondary">Serviço:</span> <strong>${log.servico}</strong></div>
-          <div class="detail-row"><span class="text-secondary">Timestamp:</span> <strong>${new Date(log.createdAt).toLocaleString('pt-BR')}</strong></div>
-          <div class="detail-row"><span class="text-secondary">Mensagem:</span></div>
-          <pre class="log-detail-message">${log.mensagem}</pre>
-        </div>
-      `;
-      document.getElementById('log-detail-modal').classList.add('show');
-    }
-
-    function closeLogDetail() {
-      document.getElementById('log-detail-modal').classList.remove('show');
-    }
-
-    function exportLogs() {
-      const blob = new Blob([JSON.stringify(allLogs, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `logs-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showNotification('Logs exportados.', 'success');
-    }
-
-    function showNotification(message, type = 'info') {
-      const container = document.getElementById('notification-container');
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.innerHTML = `
-        <span class="notification-message">${message}</span>
-        <button class="notification-close" onclick="this.parentElement.remove()" type="button">&times;</button>
-      `;
-      container.appendChild(notification);
-      setTimeout(() => notification.remove(), 5000);
-    }
-
-    document.addEventListener('DOMContentLoaded', loadLogs);
-  </script>
+  <script src="/js/logs.js" defer></script>
 </body>
 </html>

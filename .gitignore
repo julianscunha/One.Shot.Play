@@ -23,6 +23,9 @@ config/*.pem
 data/*.db
 data/*.sqlite
 data/*.db-journal
+src/data/*.db
+src/data/*.sqlite
+src/data/*.db-journal
 *.db-shm
 *.db-wal
 

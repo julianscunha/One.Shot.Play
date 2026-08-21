@@ -73,6 +73,10 @@ assuming one applies.
   convention in user-facing strings, logs, and Telegram bot copy.
 - `data/` (assets, audio, captions, scripts, videos, thumbnails) and `logs/` are
   eslint-ignored generated output, not source.
+- For files over ~200 lines, prefer `Grep` (to locate) plus `Read` with
+  `offset`/`limit` (to fetch just that section) over reading the whole file —
+  this repo's dashboard HTML files run 300-400+ lines and full reads burn
+  context fast.
 
 ## graphify
 

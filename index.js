@@ -14,7 +14,19 @@ const logger = createLogger('Main');
 const app = express();
 const PORT = process.env.PORT || 3456;
 
-// app.use(helmet()); // TODO: re-enable with proper CSP config (remove onclick handlers first)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+      scriptSrcAttr: ["'none'"],
+      styleSrc: ["'self'", 'https://fonts.googleapis.com', "'unsafe-inline'"],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:'],
+      connectSrc: ["'self'"]
+    }
+  }
+}));
 app.use(cors());
 app.use(compression());
 app.use(express.json({ limit: '1mb' }));

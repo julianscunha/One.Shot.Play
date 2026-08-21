@@ -11,6 +11,24 @@ router.get('/browser-key', (req, res) => {
   res.json({ apiKey: key || '' });
 });
 
+router.get('/', auth, async (req, res) => {
+  try {
+    const config = await configService.getConfig();
+    res.json(config);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/', auth, rateLimit.publish, async (req, res) => {
+  try {
+    const config = await configService.saveConfig(req.body);
+    res.json({ success: true, config });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get('/status', auth, async (req, res) => {
   try {
     const configured = await configService.isSystemConfigured();

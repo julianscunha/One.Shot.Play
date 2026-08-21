@@ -167,6 +167,7 @@
 
     async function loadTemplates() {
       try {
+        await loadApiKey();
         const response = await fetch('/api/templates');
         templatesData = await response.json();
         updateStats();

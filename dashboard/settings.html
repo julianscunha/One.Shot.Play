@@ -188,6 +188,7 @@
 
     async function loadSettings() {
       try {
+        await loadApiKey();
         const response = await fetch('/api/config');
         const config = await response.json();
         for (const id of FIELD_IDS) {

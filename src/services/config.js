@@ -70,11 +70,12 @@ class ConfigService {
   // ==================== Providers ====================
   async listProviders() {
     const db = await this._getDb();
-    const rows = await db.getRows('SELECT id, nome, tipo, endpoint, ativo, config FROM providers ORDER BY created_at DESC');
+    const rows = await db.getRows('SELECT id, nome, tipo, api_key, endpoint, ativo, config FROM providers ORDER BY created_at DESC');
     return rows.map(r => ({
       id: r.id,
       nome: r.nome,
       tipo: r.tipo,
+      api_key: r.api_key,
       endpoint: r.endpoint,
       ativo: !!r.ativo,
       config: r.config ? JSON.parse(r.config) : {}

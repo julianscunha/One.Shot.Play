@@ -21,10 +21,11 @@
       <li><a href="/templates.html" class="nav-link">Templates</a></li>
       <li><a href="/execute.html" class="nav-link">Executar</a></li>
       <li><a href="/schedule.html" class="nav-link">Agendamentos</a></li>
-      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
-      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/definitions.html" class="nav-link">Definições</a></li>
       <li><a href="/setup.html" class="nav-link active">Provedores</a></li>
-      <li><a href="/settings.html" class="nav-link">Sistema</a></li>
+      <li><a href="/settings.html" class="nav-link">Configurações</a></li>
+      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
     </ul>
   </nav>
 
@@ -74,12 +75,20 @@
                 <input type="password" id="openrouter-key" placeholder="sk-..." autocomplete="off">
               </div>
               <div class="form-group">
-                <label for="openrouter-model">Modelo padrão</label>
-                <select id="openrouter-model">
-                  <option value="gpt-4o">GPT-4o</option>
-                  <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
-                  <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                </select>
+                <label for="openrouter-text-model">Modelo de texto (roteiro)</label>
+                <input type="text" id="openrouter-text-model" placeholder="ex: openai/gpt-4o-mini">
+              </div>
+              <div class="form-group">
+                <label for="openrouter-image-model">Modelo de imagem</label>
+                <input type="text" id="openrouter-image-model" placeholder="ex: google/gemini-3.1-flash-image">
+              </div>
+              <div class="form-group">
+                <label for="openrouter-tts-model">Modelo de TTS (voz)</label>
+                <input type="text" id="openrouter-tts-model" placeholder="ex: google/gemini-3.1-flash-tts-preview">
+              </div>
+              <div class="form-group">
+                <label for="openrouter-tts-voice">Voz do TTS</label>
+                <input type="text" id="openrouter-tts-voice" placeholder="ex: Kore">
               </div>
               <div class="card-actions">
                 <button class="btn-secondary" id="btn-test-openrouter" type="button">Testar</button>

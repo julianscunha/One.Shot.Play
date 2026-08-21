@@ -27,7 +27,10 @@ async function loadProviders() {
     savedProviders.forEach(p => {
       if (p.tipo === 'llm') {
         document.getElementById('openrouter-key').value = p.api_key || '';
-        if (p.config?.model) document.getElementById('openrouter-model').value = p.config.model;
+        if (p.config?.textModel) document.getElementById('openrouter-text-model').value = p.config.textModel;
+        if (p.config?.imageModel) document.getElementById('openrouter-image-model').value = p.config.imageModel;
+        if (p.config?.ttsModel) document.getElementById('openrouter-tts-model').value = p.config.ttsModel;
+        if (p.config?.ttsVoice) document.getElementById('openrouter-tts-voice').value = p.config.ttsVoice;
       } else if (p.tipo === 'api') {
         document.getElementById('youtube-key').value = p.api_key || '';
         if (p.config?.channel) document.getElementById('youtube-channel').value = p.config.channel;
@@ -52,7 +55,10 @@ async function saveProvider(provider) {
 
   if (provider === 'openrouter') {
     data.key = data['openrouter-key'];
-    data.model = data['openrouter-model'];
+    data.textModel = data['openrouter-text-model'];
+    data.imageModel = data['openrouter-image-model'];
+    data.ttsModel = data['openrouter-tts-model'];
+    data.ttsVoice = data['openrouter-tts-voice'];
   } else if (provider === 'youtube') {
     data.key = data['youtube-key'];
     data.channel = data['youtube-channel'];

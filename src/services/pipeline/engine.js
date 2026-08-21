@@ -8,9 +8,6 @@ const { addCaptionsToVideo } = require('../../utils/captions');
 class PipelineEngine {
   constructor(configService) {
     this.configService = configService;
-    // ponytail: AIVideoGenerator credentials come from env vars (process.env.OPENROUTER_API_KEY
-    // etc), not from the dashboard settings table yet - wire that up if/when needed.
-    this.aiGenerator = new AIVideoGenerator({});
     this.fases = [
       { nome: 'estrategia', acao: 'gerarEstrategia' },
       { nome: 'script', acao: 'gerarScript' },
@@ -22,9 +19,26 @@ class PipelineEngine {
     ];
   }
 
+  async buildAiGenerator() {
+    const providers = await this.configService.listProviders();
+    const llm = providers.find(p => p.tipo === 'llm');
+    const credentials = llm ? {
+      openrouter: {
+        apiKey: llm.api_key,
+        textModel: llm.config?.textModel,
+        imageModel: llm.config?.imageModel,
+        ttsModel: llm.config?.ttsModel,
+        ttsVoice: llm.config?.ttsVoice
+      }
+    } : {};
+    return new AIVideoGenerator(credentials);
+  }
+
   async executar(executionId, template) {
     const execution = await this.configService.getExecution(executionId);
     if (!execution) throw new Error('Execução não encontrada');
+
+    this.aiGenerator = await this.buildAiGenerator();
 
     let fasesState = this.fases.map(f => ({
       nome: f.nome,

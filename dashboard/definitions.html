@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Definições - One.Shot.Play</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <script src="/js/common.js"></script>
+  <nav class="app-nav">
+    <a href="/" class="nav-brand">
+      <span class="brand-dot"></span>
+      One.Shot.Play
+    </a>
+    <ul class="nav-menu">
+      <li><a href="/" class="nav-link">Dashboard</a></li>
+      <li><a href="/templates.html" class="nav-link">Templates</a></li>
+      <li><a href="/execute.html" class="nav-link">Executar</a></li>
+      <li><a href="/schedule.html" class="nav-link">Agendamentos</a></li>
+      <li><a href="/definitions.html" class="nav-link active">Definições</a></li>
+      <li><a href="/setup.html" class="nav-link">Provedores</a></li>
+      <li><a href="/settings.html" class="nav-link">Configurações</a></li>
+      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-header">
+      <div class="header-title">
+        <span class="page-icon" aria-hidden="true">_tv</span>
+        <h1>Definições de Transmissão</h1>
+      </div>
+      <p class="header-desc">Onde e como o vídeo pronto é publicado: canal, qualidade e visibilidade.</p>
+    </header>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon" aria-hidden="true">T</span>
+        <div>
+          <h3 class="card-title">Canal de destino</h3>
+          <p class="card-subtitle">Parâmetros de publicação no YouTube</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="channel-name">Nome do canal</label>
+        <div class="input-wrapper">
+          <input type="text" id="channel-name" placeholder="Digite o nome do canal...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="upload-quality">Qualidade de upload</label>
+        <div class="input-wrapper">
+          <select id="upload-quality">
+            <option value="1080p">1080p (recomendado)</option>
+            <option value="720p">720p</option>
+            <option value="480p">480p</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="upload-visibility">Visibilidade padrão</label>
+        <div class="input-wrapper">
+          <select id="upload-visibility">
+            <option value="public">Público</option>
+            <option value="private">Privado</option>
+            <option value="unlisted">Não listado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action bar -->
+    <div class="setup-actions">
+      <button class="btn-secondary" id="btn-reset" type="button">
+        Restaurar padrão
+      </button>
+      <button class="btn-primary" id="btn-save" type="button">
+        Salvar definições
+      </button>
+    </div>
+  </main>
+
+  <div id="notification-container" class="notification-container"></div>
+
+  <script src="/js/settings.js" defer></script>
+</body>
+</html>

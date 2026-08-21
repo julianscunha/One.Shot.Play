@@ -21,10 +21,11 @@
       <li><a href="/templates.html" class="nav-link">Templates</a></li>
       <li><a href="/execute.html" class="nav-link">Executar</a></li>
       <li><a href="/schedule.html" class="nav-link">Agendamentos</a></li>
-      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
-      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/definitions.html" class="nav-link">Definições</a></li>
       <li><a href="/setup.html" class="nav-link">Provedores</a></li>
-      <li><a href="/settings.html" class="nav-link active">Sistema</a></li>
+      <li><a href="/settings.html" class="nav-link active">Configurações</a></li>
+      <li><a href="/logs.html" class="nav-link">Logs</a></li>
+      <li><a href="/metrics.html" class="nav-link">Métricas</a></li>
     </ul>
   </nav>
 
@@ -34,15 +35,11 @@
         <span class="page-icon" aria-hidden="true">_settings</span>
         <h1>Configurações do Sistema</h1>
       </div>
-      <p class="header-desc">Personalize o comportamento do seu sistema de automação YouTube.</p>
+      <p class="header-desc">Segurança, logs e parâmetros de execução do pipeline.</p>
       <div class="header-stats">
         <div class="stat-chip">
-          <span class="stat-value">5</span>
+          <span class="stat-value">2</span>
           <span class="stat-label">Seções</span>
-        </div>
-        <div class="stat-chip">
-          <span class="stat-value">3</span>
-          <span class="stat-label">Provedores</span>
         </div>
         <div class="stat-chip">
           <span class="stat-value">Online</span>
@@ -51,44 +48,7 @@
       </div>
     </header>
 
-    <div class="grid grid-2">
-      <!-- General settings -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon" aria-hidden="true">G</span>
-          <div>
-            <h3 class="card-title">Gerais</h3>
-            <p class="card-subtitle">Preferências do sistema</p>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="channel-name">Nome do canal</label>
-          <div class="input-wrapper">
-            <input type="text" id="channel-name" placeholder="Digite o nome do canal...">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="upload-quality">Qualidade de upload</label>
-          <div class="input-wrapper">
-            <select id="upload-quality">
-              <option value="1080p">1080p (recomendado)</option>
-              <option value="720p">720p</option>
-              <option value="480p">480p</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="upload-visibility">Visibilidade padrão</label>
-          <div class="input-wrapper">
-            <select id="upload-visibility">
-              <option value="public">Público</option>
-              <option value="private">Privado</option>
-              <option value="unlisted">Não listado</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
+    <div class="grid">
       <!-- Security settings -->
       <div class="card">
         <div class="card-header">

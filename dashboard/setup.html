@@ -241,6 +241,30 @@
       }, 1500);
     }
 
+    async function loadProviders() {
+      try {
+        await loadApiKey();
+        const response = await fetch('/api/config/providers', {
+          method: 'GET'
+        });
+        const savedProviders = await response.json();
+        savedProviders.forEach(p => {
+          if (p.tipo === 'llm') {
+            document.getElementById('openrouter-key').value = p.api_key || '';
+            if (p.config?.model) document.getElementById('openrouter-model').value = p.config.model;
+          } else if (p.tipo === 'api') {
+            document.getElementById('youtube-key').value = p.api_key || '';
+            if (p.config?.channel) document.getElementById('youtube-channel').value = p.config.channel;
+          } else if (p.tipo === 'notification') {
+            document.getElementById('telegram-token').value = p.api_key || '';
+            if (p.config?.chat_id) document.getElementById('telegram-chat').value = p.config.chat_id;
+          }
+        });
+      } catch (error) {
+        console.error('Erro ao carregar provedores:', error);
+      }
+    }
+
     async function saveProvider(provider) {
       await loadApiKey();
       const card = document.querySelector(`[data-provider="${provider}"]`);
@@ -365,6 +389,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      loadProviders();
       const draft = localStorage.getItem('one-shot-play-setup-draft');
       if (draft) {
         const data = JSON.parse(draft);

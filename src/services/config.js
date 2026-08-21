@@ -365,17 +365,23 @@ class ConfigService {
   async listSchedules() {
     const db = await this._getDb();
     const rows = await db.getRows(
-      'SELECT id, production_id, title, publish_time, status, priority, metadata, created_at FROM publish_schedule ORDER BY created_at DESC'
+      `SELECT s.id, s.nome, s.template_id, t.nome as template_nome, s.frequencia, s.hora,
+              s.ativo, s.descricao, s.proximo, s.ultima_execucao, s.custo, s.created_at
+       FROM schedules s LEFT JOIN templates t ON t.id = s.template_id
+       ORDER BY s.created_at DESC`
     );
     return rows.map(r => ({
       id: r.id,
-      production_id: r.production_id,
-      title: r.title,
-      publish_time: r.publish_time,
-      publishTime: r.publish_time,
-      status: r.status,
-      priority: r.priority,
-      metadata: r.metadata ? JSON.parse(r.metadata) : {},
+      nome: r.nome,
+      template_id: r.template_id,
+      template: r.template_nome || r.template_id,
+      frequencia: r.frequencia,
+      hora: r.hora,
+      ativo: !!r.ativo,
+      descricao: r.descricao,
+      proximo: r.proximo,
+      ultimaExecucao: r.ultima_execucao,
+      custo: r.custo || 0,
       createdAt: r.created_at
     }));
   }
@@ -383,10 +389,9 @@ class ConfigService {
   async createSchedule(data) {
     const db = await this._getDb();
     const id = db.generateId('sched_');
-    const metadata = data.metadata ? JSON.stringify(data.metadata) : null;
     await db.execute(
-      'INSERT INTO publish_schedule (id, production_id, title, publish_time, status, priority, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [id, data.production_id || null, data.title, data.publish_time || data.publishTime, data.status || 'scheduled', data.priority || 50, metadata]
+      'INSERT INTO schedules (id, nome, template_id, frequencia, hora, ativo, descricao) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [id, data.nome, data.template_id || null, data.frequencia, data.hora, data.ativo ? 1 : 0, data.descricao || null]
     );
     return { id, ...data };
   }
@@ -394,15 +399,23 @@ class ConfigService {
   async updateSchedule(id, data) {
     const db = await this._getDb();
     await db.execute(
-      'UPDATE publish_schedule SET production_id = ?, title = ?, publish_time = ?, status = ?, priority = ?, metadata = ? WHERE id = ?',
-      [data.production_id || null, data.title, data.publish_time || data.publishTime, data.status || 'scheduled', data.priority || 50, data.metadata ? JSON.stringify(data.metadata) : null, id]
+      `UPDATE schedules SET
+        nome = COALESCE(?, nome),
+        template_id = COALESCE(?, template_id),
+        frequencia = COALESCE(?, frequencia),
+        hora = COALESCE(?, hora),
+        ativo = COALESCE(?, ativo),
+        descricao = COALESCE(?, descricao)
+       WHERE id = ?`,
+      [data.nome ?? null, data.template_id ?? null, data.frequencia ?? null, data.hora ?? null,
+       data.ativo === undefined ? null : (data.ativo ? 1 : 0), data.descricao ?? null, id]
     );
     return { id, ...data };
   }
 
   async deleteSchedule(id) {
     const db = await this._getDb();
-    await db.execute('DELETE FROM publish_schedule WHERE id = ?', [id]);
+    await db.execute('DELETE FROM schedules WHERE id = ?', [id]);
     return { id, deleted: true };
   }
 

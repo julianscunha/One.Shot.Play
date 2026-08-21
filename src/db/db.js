@@ -118,6 +118,21 @@ class Database {
           mensagem TEXT,
           dados TEXT,
           created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )`,
+
+        // Schedules table
+        `CREATE TABLE IF NOT EXISTS schedules (
+          id TEXT PRIMARY KEY,
+          nome TEXT NOT NULL,
+          template_id TEXT,
+          frequencia TEXT,
+          hora TEXT,
+          ativo INTEGER DEFAULT 1,
+          descricao TEXT,
+          proximo TEXT,
+          ultima_execucao TEXT,
+          custo REAL DEFAULT 0,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )`
       ];
     

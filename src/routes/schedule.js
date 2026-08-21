@@ -15,7 +15,7 @@ router.get('/schedules', auth, async (req, res) => {
   }
 });
 
-router.post('/schedules', auth, rateLimit.publish, async (req, res) => {
+router.post('/schedules', auth, rateLimit.general, async (req, res) => {
   try {
     const schedule = await configService.createSchedule(req.body);
     res.json({ success: true, schedule });
@@ -24,7 +24,7 @@ router.post('/schedules', auth, rateLimit.publish, async (req, res) => {
   }
 });
 
-router.put('/schedules/:id', auth, rateLimit.publish, async (req, res) => {
+router.put('/schedules/:id', auth, rateLimit.general, async (req, res) => {
   try {
     const schedule = await configService.updateSchedule(req.params.id, req.body);
     res.json({ success: true, schedule });
@@ -33,7 +33,7 @@ router.put('/schedules/:id', auth, rateLimit.publish, async (req, res) => {
   }
 });
 
-router.delete('/schedules/:id', auth, rateLimit.publish, async (req, res) => {
+router.delete('/schedules/:id', auth, rateLimit.general, async (req, res) => {
   try {
     await configService.deleteSchedule(req.params.id);
     res.json({ success: true });

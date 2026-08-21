@@ -6,6 +6,11 @@ const rateLimit = require('../middleware/rateLimit');
 
 const configService = new ConfigService();
 
+router.get('/browser-key', (req, res) => {
+  const key = process.env.API_KEY;
+  res.json({ apiKey: key || '' });
+});
+
 router.get('/status', auth, async (req, res) => {
   try {
     const configured = await configService.isSystemConfigured();

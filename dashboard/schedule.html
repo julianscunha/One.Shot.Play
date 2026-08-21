@@ -172,6 +172,7 @@
 
     async function loadSchedules() {
       try {
+        await loadApiKey();
         const url = new URL('/api/schedules', window.location.origin);
         document.getElementById('filter-status').value && url.searchParams.append('status', document.getElementById('filter-status').value);
         document.getElementById('filter-template').value && url.searchParams.append('template', document.getElementById('filter-template').value);
@@ -223,28 +224,65 @@
             </div>
           </div>
           <div class="card-actions">
-            <button class="btn-outline" onclick="editSchedule('${s._id}')">Editar</button>
-            <button class="btn-secondary" onclick="toggleSchedule('${s._id}', ${!s.ativo})">
+            <button class="btn-outline" onclick="editSchedule('${s.id}')">Editar</button>
+            <button class="btn-secondary" onclick="toggleSchedule('${s.id}', ${!s.ativo})">
               ${s.ativo ? 'Pausar' : 'Ativar'}
             </button>
-            <button class="btn-text" onclick="deleteSchedule('${s._id}')">Excluir</button>
+            <button class="btn-text" onclick="deleteSchedule('${s.id}')">Excluir</button>
           </div>
         </div>
       `).join('');
     }
 
+    let editingId = null;
+
     function showScheduleModal() {
+      editingId = null;
       document.getElementById('modal-title').textContent = 'Novo Agendamento';
+      document.getElementById('schedule-form').reset();
       document.getElementById('schedule-modal').classList.add('show');
     }
     function closeScheduleModal() { document.getElementById('schedule-modal').classList.remove('show'); }
 
-    function editSchedule(id) { showNotification(`Editar ${id}`, 'info'); }
-    function toggleSchedule(id, enable) {
-      showNotification(`${enable ? 'Ativado' : 'Pausado'} ${id}`, enable ? 'success' : 'warning');
+    function editSchedule(id) {
+      const s = schedulesData.find(x => x.id === id);
+      if (!s) return;
+      editingId = id;
+      document.getElementById('modal-title').textContent = 'Editar Agendamento';
+      document.getElementById('schedule-name').value = s.nome || '';
+      document.getElementById('schedule-template').value = s.template_id || '';
+      document.getElementById('schedule-frequency').value = s.frequencia || '';
+      document.getElementById('schedule-time').value = s.hora || '';
+      document.getElementById('schedule-enabled').value = s.ativo ? 'true' : 'false';
+      document.getElementById('schedule-description').value = s.descricao || '';
+      document.getElementById('schedule-modal').classList.add('show');
     }
-    function deleteSchedule(id) {
-      if (confirm('Excluir este agendamento?')) showNotification(`Excluído ${id}`, 'warning');
+
+    async function toggleSchedule(id, enable) {
+      try {
+        const response = await fetch(`/api/schedules/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ativo: enable })
+        });
+        if (!response.ok) throw new Error('Falha ao atualizar');
+        showNotification(`${enable ? 'Ativado' : 'Pausado'}`, enable ? 'success' : 'warning');
+        loadSchedules();
+      } catch (error) {
+        showNotification('Erro ao atualizar agendamento.', 'error');
+      }
+    }
+
+    async function deleteSchedule(id) {
+      if (!confirm('Excluir este agendamento?')) return;
+      try {
+        const response = await fetch(`/api/schedules/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Falha ao excluir');
+        showNotification('Agendamento excluído.', 'warning');
+        loadSchedules();
+      } catch (error) {
+        showNotification('Erro ao excluir agendamento.', 'error');
+      }
     }
 
     function showNotification(message, type = 'info') {
@@ -261,9 +299,27 @@
 
     document.getElementById('schedule-form')?.addEventListener('submit', async function(e) {
       e.preventDefault();
-      showNotification('Agendamento criado.', 'success');
-      closeScheduleModal();
-      loadSchedules();
+      const body = {
+        nome: document.getElementById('schedule-name').value,
+        template_id: document.getElementById('schedule-template').value,
+        frequencia: document.getElementById('schedule-frequency').value,
+        hora: document.getElementById('schedule-time').value,
+        ativo: document.getElementById('schedule-enabled').value === 'true',
+        descricao: document.getElementById('schedule-description').value
+      };
+      try {
+        const response = await fetch(editingId ? `/api/schedules/${editingId}` : '/api/schedules', {
+          method: editingId ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) throw new Error('Falha ao salvar');
+        closeScheduleModal();
+        loadSchedules();
+        showNotification(editingId ? 'Agendamento atualizado.' : 'Agendamento criado.', 'success');
+      } catch (error) {
+        showNotification('Erro ao salvar agendamento.', 'error');
+      }
     });
 
     document.getElementById('filter-status')?.addEventListener('change', loadSchedules);

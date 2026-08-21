@@ -37,13 +37,12 @@ async function startServer() {
 
     // Montar rotas
     app.use('/setup', setupRoutes);
-    app.use('/api', apiRoutes);
     app.use('/api', require('./src/routes/execution'));
     app.use('/api', require('./src/routes/templates'));
     app.use('/api', require('./src/routes/schedule'));
     app.use('/api', require('./src/routes/logs'));
     app.use('/api', require('./src/routes/metrics'));
-    app.use('/api', require('./src/routes/config'));
+    app.use('/api/config', require('./src/routes/config'));
     app.use('/api', require('./src/routes/analytics'));
     app.use('/api', require('./src/routes/costs'));
 
